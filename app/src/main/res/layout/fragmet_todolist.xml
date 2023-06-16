@@ -1,0 +1,71 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:id="@+id/toolbar_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="60dp"
+        android:text="@string/title"
+        android:textColor="@color/black"
+        android:textSize="38sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/toolbar_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/toolbar_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:textColor="@color/label_light_tertiary"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="@id/toolbar_title"
+        app:layout_constraintStart_toStartOf="@+id/toolbar_title"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_title"
+        tools:text="@string/toolbar_subtitle" />
+
+    <ImageView
+        android:id="@+id/toolbar_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="24dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/visible"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar_subtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/toolbar_subtitle" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="6dp"
+        android:paddingHorizontal="8dp"
+        android:paddingTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_subtitle"
+        tools:itemCount="100"
+        tools:listitem="@layout/recycler_view_item" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/add_button"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/oval"
+        android:backgroundTint="@color/color_light_blue"
+        android:src="@drawable/add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:shapeAppearance="@drawable/oval"
+        app:shapeAppearanceOverlay="@drawable/oval"
+        app:tint="@color/white" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

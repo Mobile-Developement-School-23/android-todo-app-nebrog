@@ -1,0 +1,9 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.ToDoApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/back_light_primary</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.ToDoApp" parent="Base.Theme.ToDoApp" />
+</resources>
