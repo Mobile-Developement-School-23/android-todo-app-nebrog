@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import com.example.todoapp.data.StubTodoRepository
 import com.example.todoapp.domain.TodoItem
-import java.time.Instant
+import java.util.Calendar
 import java.util.Date
 
 class AddTodoViewModel : ViewModel() {
@@ -18,7 +18,7 @@ class AddTodoViewModel : ViewModel() {
             itemPriority = priority,
             deadline = deadline,
             doneFlag = false,
-            dateOfCreation = Date.from(Instant.now()),
+            dateOfCreation = Calendar.getInstance().time,
             dateOfChanges = null
         )
         repository.addTodo(todo)

@@ -22,6 +22,7 @@ abstract class SoloTodoFragment : Fragment(R.layout.fragmet_add_todo) {
     private var _binding: FragmetAddTodoBinding? = null
     protected val binding get() = _binding!!
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -48,11 +49,11 @@ abstract class SoloTodoFragment : Fragment(R.layout.fragmet_add_todo) {
             field = value
         }
 
-    protected open fun setUpUI(view: View) {
+    protected open fun setUpUI(view: View, savedInstanceState: Bundle?) {
+
         binding.cancelButton.setOnClickListener {
             parentFragmentManager.popBackStackImmediate()
         }
-
         binding.switchButton.tag = false
         binding.switchButton.setOnCheckedChangeListener { _, isChecked ->
             if (binding.switchButton.tag != true) {

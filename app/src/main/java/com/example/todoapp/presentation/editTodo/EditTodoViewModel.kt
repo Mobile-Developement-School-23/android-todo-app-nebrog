@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import com.example.todoapp.data.StubTodoRepository
 import com.example.todoapp.domain.TodoItem
-import java.time.Instant
+import java.util.Calendar
 import java.util.Date
 
 class EditTodoViewModel : ViewModel() {
@@ -19,7 +19,7 @@ class EditTodoViewModel : ViewModel() {
             deadline = deadline,
             doneFlag = doneFlag,
             dateOfCreation = dateOfCreation,
-            dateOfChanges = Date.from(Instant.now())
+            dateOfChanges = Calendar.getInstance().time
         )
         repository.updateTodo(todo)
         backTodoList(fragment)

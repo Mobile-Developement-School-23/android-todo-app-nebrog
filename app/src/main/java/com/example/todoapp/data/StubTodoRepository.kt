@@ -4,8 +4,7 @@ import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import java.time.Instant
-import java.util.Date
+import java.util.Calendar
 import java.util.UUID
 import kotlin.random.Random
 
@@ -63,25 +62,17 @@ object StubTodoRepository : TodoRepository {
             "Выкинуть мусор, выучить английский, написать книгу",
             "Заселить Марс, посадить лес, построить руками город, собрать машину, проплыть океан, 10 раз отжаться, позвонить в сбербанк - предложить кредитную карту, научить сальто",
         )
-        val changeDate = if (random.nextBoolean()) randomDate(+500_000) else null
-        val deadline = if (random.nextBoolean()) randomDate(+500_000_000) else null
+        val changeDate = if (random.nextBoolean()) Calendar.getInstance().time else null
+        val deadline = if (random.nextBoolean()) Calendar.getInstance().time else null
         return TodoItem(
             itemID = UUID.randomUUID().toString(),
             itemText = "${texts.random(random)} ${counter++}",
             itemPriority = TodoItem.Priority.values().random(random),
             deadline = deadline,
             doneFlag = random.nextBoolean(),
-            dateOfCreation = randomDate(-1_000_000),
+            dateOfCreation = Calendar.getInstance().time,
             dateOfChanges = changeDate,
         )
-    }
-
-    private fun randomDate(seconds: Long): Date {
-        return if (seconds >= 0) {
-            Date.from(Instant.now().plusSeconds(random.nextLong(0, seconds)))
-        } else {
-            Date.from(Instant.now().minusSeconds(random.nextLong(0, -seconds)))
-        }
     }
 
 }
