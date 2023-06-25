@@ -2,8 +2,10 @@ package com.example.todoapp.data
 
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.UUID
 import kotlin.random.Random
@@ -19,41 +21,46 @@ object StubTodoRepository : TodoRepository {
         flow.tryEmit(todos)
     }
 
-    override fun addTodo(item: TodoItem) {
+    override suspend fun addTodo(item: TodoItem): TodoRepository.Result<Unit> {
         val itemWithID = item.copy(itemID = UUID.randomUUID().toString())
         todos.add(itemWithID)
-        flow.tryEmit(todos.toList())
+        flow.emit(todos.toList())
+        return TodoRepository.Result.Success(Unit)
     }
 
-    override fun deleteTodo(id: String) {
-        todos.removeIf { it.itemID == id }
-        flow.tryEmit(todos.toList())
+    override suspend fun deleteTodo(id: String): TodoRepository.Result<Unit> {
+        withContext(Dispatchers.IO) {
+            todos.removeIf { it.itemID == id }
+            flow.emit(todos.toList())
+        }
+        return TodoRepository.Result.Success(Unit)
     }
 
-    override fun updateTodo(item: TodoItem) {
+    override suspend fun updateTodo(item: TodoItem): TodoRepository.Result<Unit> {
         val index = todos.indexOfFirst { it.itemID == item.itemID }
         if (index == -1) {
-            return
+            return TodoRepository.Result.Failure("No item with such ID")
         }
         todos[index] = item
-        flow.tryEmit(todos.toList())
+        flow.emit(todos.toList())
+        return TodoRepository.Result.Success(Unit)
     }
 
-    override fun getTodo(id: String): TodoItem {
+    override suspend fun getTodo(id: String): TodoRepository.Result<TodoItem> {
         val index = todos.indexOfFirst { it.itemID == id }
         if (index == -1) {
-            TODO()
+            return TodoRepository.Result.Failure("No item with such ID")
         }
-        flow.tryEmit(todos.toList())
-        return todos[index]
+        flow.emit(todos.toList())
+        return TodoRepository.Result.Success(todos[index])
     }
 
     override fun observeTodos(): Flow<List<TodoItem>> {
         return flow
     }
 
-    override fun getAllTodos(): List<TodoItem> {
-        return todos.toList()
+    override suspend fun getAllTodos(): TodoRepository.Result<List<TodoItem>> {
+        return TodoRepository.Result.Success(todos.toList())
     }
 
     private fun getRandomTodo(): TodoItem {

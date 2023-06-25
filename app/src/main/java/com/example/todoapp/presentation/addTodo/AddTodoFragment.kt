@@ -3,8 +3,10 @@ package com.example.todoapp.presentation.addTodo
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.presentation.SoloTodoFragment
+import kotlinx.coroutines.launch
 import java.util.Date
 
 class AddTodoFragment : SoloTodoFragment() {
@@ -29,7 +31,10 @@ class AddTodoFragment : SoloTodoFragment() {
             }
         }
         binding.saveButton.setOnClickListener {
-            viewModel.onTodoSave(binding.todoEdit.text.toString(), priority, deadline, this)
+            lifecycleScope.launch {
+                viewModel.onTodoSave(binding.todoEdit.text.toString(), priority, deadline, this@AddTodoFragment
+                )
+            }
         }
     }
 

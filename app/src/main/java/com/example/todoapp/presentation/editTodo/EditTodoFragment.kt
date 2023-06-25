@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.todoapp.R
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.presentation.SoloTodoFragment
+import kotlinx.coroutines.launch
 import java.util.Date
 
 class EditTodoFragment : SoloTodoFragment() {
@@ -25,27 +27,43 @@ class EditTodoFragment : SoloTodoFragment() {
         binding.delButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_dark_red))
         binding.delButton.isEnabled = true
         binding.delButton.setOnClickListener {
-            viewModel.onDeleteTodo(todoID, this)
-        }
+            lifecycleScope.launch {
+                viewModel.onDeleteTodo(todoID, this@EditTodoFragment)
 
-        val todo = viewModel.getTodo(todoID)
-        binding.todoEdit.setText(todo.itemText)
-        if (savedInstanceState != null) {
-            val enumName = savedInstanceState.getString(BUNDLE_KEY_PRIORITY)
-            priority = TodoItem.Priority.valueOf(enumName!!)
-            val dateLong = savedInstanceState.getLong(BUNDLE_KEY_DEADLINE, -1)
-            if (dateLong == -1L) {
-                deadline = null
-            } else {
-                deadline = Date(dateLong)
             }
-        } else {
-            priority = todo.itemPriority
-            deadline = todo.deadline
         }
 
-        binding.saveButton.setOnClickListener {
-            viewModel.onChangeTodo(todo.itemID, binding.todoEdit.text.toString(), priority, deadline, todo.doneFlag, todo.dateOfCreation, this)
+        lifecycleScope.launch{
+            val todo = viewModel.getTodo(todoID)
+            binding.todoEdit.setText(todo.itemText)
+            if (savedInstanceState != null) {
+                val enumName = savedInstanceState.getString(BUNDLE_KEY_PRIORITY)
+                priority = TodoItem.Priority.valueOf(enumName!!)
+                val dateLong = savedInstanceState.getLong(BUNDLE_KEY_DEADLINE, -1)
+                if (dateLong == -1L) {
+                    deadline = null
+                } else {
+                    deadline = Date(dateLong)
+                }
+            } else {
+                priority = todo.itemPriority
+                deadline = todo.deadline
+            }
+
+            binding.saveButton.setOnClickListener {
+                lifecycleScope.launch {
+                    viewModel.onChangeTodo(
+                        todo.itemID,
+                        binding.todoEdit.text.toString(),
+                        priority,
+                        deadline,
+                        todo.doneFlag,
+                        todo.dateOfCreation,
+                        this@EditTodoFragment
+                    )
+
+                }
+            }
         }
     }
 

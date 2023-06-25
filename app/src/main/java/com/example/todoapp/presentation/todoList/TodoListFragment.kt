@@ -12,6 +12,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.R
 import com.example.todoapp.databinding.FragmetTodolistBinding
+import com.example.todoapp.presentation.addTodo.AddTodoFragment
+import com.example.todoapp.presentation.editTodo.EditTodoFragment
 import com.example.todoapp.presentation.todoList.TodoListViewModel.State
 import kotlinx.coroutines.launch
 
@@ -39,8 +41,9 @@ class TodoListFragment : Fragment(), Callback {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.states.collect { state ->
                     when (state) {
-                        State.Loading -> showLoadingState()
+                        is State.Loading -> showLoadingState()
                         is State.Success -> showSuccessState(state)
+                        is State.Error -> showErrorState()
                     }
                 }
             }
@@ -57,10 +60,17 @@ class TodoListFragment : Fragment(), Callback {
     }
 
     override fun onClickText(id: String) {
-        viewModel.onTodoClick(id, this)
+        val editTodo = EditTodoFragment.createNewInstance(id)
+        parentFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container_view, editTodo)
+            .addToBackStack(null)
+            .commit()
     }
 
     private fun showLoadingState() {}
+
+    private fun showErrorState() {}
 
     private fun showSuccessState(state: State.Success) {
         todoAdapter.setListTodos(state.items)
@@ -83,7 +93,11 @@ class TodoListFragment : Fragment(), Callback {
         binding.recyclerView.layoutManager = layoutManager
 
         binding.addButton.setOnClickListener {
-            viewModel.onAddClick(this)
+            parentFragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container_view, AddTodoFragment())
+                .addToBackStack(null)
+                .commit()
         }
     }
 }

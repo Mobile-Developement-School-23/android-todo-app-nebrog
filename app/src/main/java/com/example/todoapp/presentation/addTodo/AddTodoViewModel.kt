@@ -11,7 +11,7 @@ class AddTodoViewModel : ViewModel() {
 
     private val repository = StubTodoRepository
 
-    fun onTodoSave(text: String, priority: TodoItem.Priority, deadline: Date?, fragment: Fragment) {
+    suspend fun onTodoSave(text: String, priority: TodoItem.Priority, deadline: Date?, fragment: Fragment) {
         val todo = TodoItem(
             itemID = "",
             itemText = text,
