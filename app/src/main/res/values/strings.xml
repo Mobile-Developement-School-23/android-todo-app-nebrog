@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">ToDo App</string>
+    <string name="my_todo">Мои дела</string>
+    <string name="save">СОХРАНИТЬ</string>
+    <string name="new_todo">Что надо сделать…</string>
+    <string name="priority">Важность</string>
+    <string name="deadline">Сделать до</string>
+    <string name="low_priority">Низкий</string>
+    <string name="normal_priority">Нет</string>
+    <string name="high_priority">!!Высокий</string>
+    <string name="delete">Удалить</string>
+    <string name="cancel">Отмена</string>
+    <string name="toolbar_subtitle">Выполнено — %1$d</string>
+    <string name="title">Мои дела</string>
+</resources>
