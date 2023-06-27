@@ -26,15 +26,17 @@ class EditTodoFragment : SoloTodoFragment() {
         binding.delImg.setColorFilter(ContextCompat.getColor(requireContext(), R.color.color_dark_red))
         binding.delButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_dark_red))
         binding.delButton.isEnabled = true
-        binding.delButton.setOnClickListener {
-            lifecycleScope.launch {
-                viewModel.onDeleteTodo(todoID, this@EditTodoFragment)
 
-            }
-        }
 
         lifecycleScope.launch{
             val todo = viewModel.getTodo(todoID)
+            binding.delButton.setOnClickListener {
+                lifecycleScope.launch {
+                    viewModel.onDeleteTodo(todoID, todo)
+                    parentFragmentManager
+                        .popBackStackImmediate()
+                }
+            }
             binding.todoEdit.setText(todo.itemText)
             if (savedInstanceState != null) {
                 val enumName = savedInstanceState.getString(BUNDLE_KEY_PRIORITY)
@@ -58,9 +60,10 @@ class EditTodoFragment : SoloTodoFragment() {
                         priority,
                         deadline,
                         todo.doneFlag,
-                        todo.dateOfCreation,
-                        this@EditTodoFragment
+                        todo.dateOfCreation
                     )
+                    parentFragmentManager
+                        .popBackStackImmediate()
 
                 }
             }

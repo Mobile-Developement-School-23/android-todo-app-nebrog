@@ -8,6 +8,7 @@ import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.presentation.SoloTodoFragment
 import kotlinx.coroutines.launch
 import java.util.Date
+import java.util.UUID
 
 class AddTodoFragment : SoloTodoFragment() {
 
@@ -20,6 +21,7 @@ class AddTodoFragment : SoloTodoFragment() {
 
     override fun setUpUI(view: View, savedInstanceState: Bundle?) {
         super.setUpUI(view, savedInstanceState)
+        val id = UUID.randomUUID().toString()
         if (savedInstanceState != null) {
             val enumName = savedInstanceState.getString(BUNDLE_KEY_PRIORITY)
             priority = TodoItem.Priority.valueOf(enumName!!)
@@ -32,9 +34,11 @@ class AddTodoFragment : SoloTodoFragment() {
         }
         binding.saveButton.setOnClickListener {
             lifecycleScope.launch {
-                viewModel.onTodoSave(binding.todoEdit.text.toString(), priority, deadline, this@AddTodoFragment
+                viewModel.onTodoSave(
+                    id.toString(), binding.todoEdit.text.toString(), priority, deadline
                 )
             }
+            parentFragmentManager.popBackStackImmediate()
         }
     }
 

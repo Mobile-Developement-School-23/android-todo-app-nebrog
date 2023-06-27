@@ -2,17 +2,16 @@ package com.example.todoapp.presentation.todoList
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.todoapp.data.StubTodoRepository
+import com.example.todoapp.data.network.NetworkRepository
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class TodoListViewModel : ViewModel() {
 
-    private val repository = StubTodoRepository
+    private val repository = NetworkRepository
     private val mutableStates: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     private val isHidden: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
@@ -21,9 +20,12 @@ class TodoListViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            repository.observeTodos().combine(isHidden) { a, b -> a to b }.collect { (todos, isHidden) ->
+            isHidden.collect { isHidden ->
+                val todos = (repository.getAllTodos() as TodoRepository.Result.Success).value
+
+
+//            repository.observeTodos().combine(isHidden) { a, b -> a to b }.collect { (todos, isHidden) ->
                 val doneCount = todos.count { it.doneFlag }
-                println("KEK $doneCount")
                 val items = if (isHidden) {
                     todos.filter { !it.doneFlag }
                 } else {
@@ -54,7 +56,6 @@ class TodoListViewModel : ViewModel() {
                 mutableStates.value = State.Error
                 return@launch
             }
-            println("KEKOnDone $id $isDone")
         }
 
     }

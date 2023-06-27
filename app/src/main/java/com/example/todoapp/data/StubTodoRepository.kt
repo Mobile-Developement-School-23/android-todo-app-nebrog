@@ -2,10 +2,8 @@ package com.example.todoapp.data
 
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.UUID
 import kotlin.random.Random
@@ -28,11 +26,9 @@ object StubTodoRepository : TodoRepository {
         return TodoRepository.Result.Success(Unit)
     }
 
-    override suspend fun deleteTodo(id: String): TodoRepository.Result<Unit> {
-        withContext(Dispatchers.IO) {
-            todos.removeIf { it.itemID == id }
-            flow.emit(todos.toList())
-        }
+    override suspend fun deleteTodo(id: String, item: TodoItem): TodoRepository.Result<Unit> {
+        todos.removeIf { it.itemID == item.itemID }
+        flow.emit(todos.toList())
         return TodoRepository.Result.Success(Unit)
     }
 
