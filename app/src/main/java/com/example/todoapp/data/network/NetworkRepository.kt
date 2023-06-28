@@ -16,34 +16,33 @@ import java.util.Date
 object NetworkRepository : TodoRepository {
 
     private val service = RetrofitService.getInstance()
-    private const val TOKEN = "Bearer inductions"
     private var revision = 0
     private val androidID = Settings.Secure.getString(App.application.contentResolver, Settings.Secure.ANDROID_ID)
 
 
     override suspend fun addTodo(item: TodoItem): TodoRepository.Result<Unit> {
         return networkCall(action = {
-            service.addTodo(TOKEN, revision, TodoItemRequest(converterRequest(item)))
+            service.addTodo(revision, TodoItemRequest(converterRequest(item)))
         })
     }
 
     override suspend fun deleteTodo(id: String, item: TodoItem): TodoRepository.Result<Unit> {
         return networkCall(action = {
-            service.deleteTodo(TOKEN, revision, id, TodoItemRequest(converterRequest(item)))
+            service.deleteTodo(revision, id, TodoItemRequest(converterRequest(item)))
         })
 
     }
 
     override suspend fun updateTodo(item: TodoItem): TodoRepository.Result<Unit> {
         return networkCall(action = {
-            service.updateTodo(TOKEN, revision, item.itemID, TodoItemRequest(converterRequest(item)))
+            service.updateTodo(revision, item.itemID, TodoItemRequest(converterRequest(item)))
         })
     }
 
 
     override suspend fun getTodo(id: String): TodoRepository.Result<TodoItem> {
         return networkCall(action = {
-            val response = service.getTodo(TOKEN, id)
+            val response = service.getTodo(id)
             val todo = converterResponse(response.element)
             return@networkCall todo
         })
@@ -51,7 +50,7 @@ object NetworkRepository : TodoRepository {
 
     override suspend fun getAllTodos(): TodoRepository.Result<List<TodoItem>> {
         return networkCall(action = {
-            val response = service.getTodoList(TOKEN)
+            val response = service.getTodoList()
             val listTodoItem = response.list.map { pojo: TodoItemPOJO ->
                 converterResponse(pojo)
             }

@@ -31,6 +31,7 @@ interface RetrofitService {
             val mOkHttpClient = OkHttpClient
                 .Builder()
                 .addInterceptor(mHttpLoggingInterceptor)
+                .addInterceptor(AuthInterceptor())
                 .build()
 
             if (retrofitService == null) {
@@ -48,28 +49,25 @@ interface RetrofitService {
 
 
     @GET("list")
-    suspend fun getTodoList(@Header("Authorization") token: String): TodoItemListResponse
+    suspend fun getTodoList(): TodoItemListResponse
 
     @PATCH("list")
     suspend fun updateTodosOnServer(
-        @Header("Authorization") token: String,
         @Header("X-Last-Known-Revision") revision: Int,
         @Body todoItemList: TodoItemListRequest
     ): TodoItemListResponse
 
     @GET("list/{id}")
-    suspend fun getTodo(@Header("Authorization") token: String, @Path("id") id: String): TodoItemResponse
+    suspend fun getTodo(@Path("id") id: String): TodoItemResponse
 
     @POST("list")
     suspend fun addTodo(
-        @Header("Authorization") token: String,
         @Header("X-Last-Known-Revision") revision: Int,
         @Body todoItem: TodoItemRequest
     ): TodoItemResponse
 
     @PUT("list/{id}")
     suspend fun updateTodo(
-        @Header("Authorization") token: String,
         @Header("X-Last-Known-Revision") revision: Int,
         @Path("id") id: String,
         @Body todoItem: TodoItemRequest
@@ -77,7 +75,6 @@ interface RetrofitService {
 
     @HTTP(method = "DELETE", path = "list/{id}", hasBody = true)
     suspend fun deleteTodo(
-        @Header("Authorization") token: String,
         @Header("X-Last-Known-Revision") revision: Int,
         @Path("id") id: String,
         @Body todoItem: TodoItemRequest
