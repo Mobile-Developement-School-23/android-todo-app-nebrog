@@ -30,7 +30,7 @@ class App : Application() {
             .build()
         val workRequest = PeriodicWorkRequestBuilder<MyWorker>(
             repeatInterval = 8, TimeUnit.HOURS
-        ).setConstraints(constraints).build()
+        ).setConstraints(constraints).setInitialDelay(8L, TimeUnit.HOURS).build()
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             WORKNAME,
             ExistingPeriodicWorkPolicy.UPDATE,

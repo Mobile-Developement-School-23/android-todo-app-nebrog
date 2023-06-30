@@ -8,9 +8,12 @@ import com.example.todoapp.data.network.NetworkRepository
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository.Result.Failure
 import com.example.todoapp.domain.TodoRepository.Result.Success
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -20,24 +23,13 @@ class TodoListViewModel : ViewModel() {
     private val mutableStates: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     private val mutableActions = MutableSharedFlow<Actions>(replay = 0)
     private val isHidden: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private var collectJob: Job? = null
 
     val actions: MutableSharedFlow<Actions> = mutableActions
     val states: StateFlow<State> = mutableStates
 
-
     init {
-        viewModelScope.launch {
-            repository.observeTodos().combine(isHidden) { a, b -> a to b }.collect { (todos, isHidden) ->
-                val doneCount = todos.count { it.doneFlag }
-                val items = if (isHidden) {
-                    todos.filter { !it.doneFlag }
-                } else {
-                    todos
-                }
-                val success = State.Success(items, isHidden, doneCount)
-                mutableStates.value = success
-            }
-        }
+        loadContent()
     }
 
     fun onDoneClick(id: String, isDone: Boolean) {
@@ -65,12 +57,48 @@ class TodoListViewModel : ViewModel() {
         isHidden.value = !isHidden.value
     }
 
+    fun onRetryClick() {
+        mutableStates.value = State.Loading
+        loadContent()
+    }
+
+    private fun loadContent() {
+        collectJob?.cancel()
+        collectJob = viewModelScope.launch {
+            val result = repository.getAllTodos()
+            when (result) {
+                is Failure -> mutableStates.value = State.NoNetwork
+                is Success -> emitSuccessState(result.value, isHidden.value)
+            }
+
+            repository.observeTodos().combine(isHidden) { todos, isHidden ->
+                emitSuccessState(todos, isHidden)
+            }.catch {
+                mutableStates.value = State.NoNetwork
+            }.collect()
+        }
+    }
+
+    private fun emitSuccessState(todos: List<TodoItem>, isHidden: Boolean) {
+        val doneCount = todos.count { it.doneFlag }
+        val items = if (isHidden) {
+            todos.filter { !it.doneFlag }
+        } else {
+            todos
+        }
+        val success = State.Success(items, isHidden, doneCount)
+        mutableStates.value = success
+    }
+
+
     sealed interface State {
         data class Success(
             val items: List<TodoItem>,
             val isHidden: Boolean,
-            val doneCount: Int
+            val doneCount: Int,
         ) : State
+
+        object NoNetwork : State
 
         object Loading : State
     }

@@ -7,6 +7,7 @@ import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -123,6 +124,6 @@ class AddTodoFragment : SoloTodoFragment() {
         Snackbar.make(
             view, state.messageID,
             Snackbar.LENGTH_LONG
-        ).show()
+        ).setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
     }
 }

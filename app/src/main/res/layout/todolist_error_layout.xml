@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/error_todolist"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/back_light_primary">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/no_wifi"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_gravity="center"
         android:src="@drawable/internet_error"
+        android:tint="@color/color_light_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,19 +24,22 @@
         android:layout_margin="10dp"
         android:text="@string/internet_error"
         android:textColor="@color/label_light_tertiary"
-        android:textSize="14sp"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/no_wifi" />
 
-    <androidx.appcompat.widget.AppCompatButton
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/retry_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="@string/retry"
+        android:backgroundTint="@color/color_light_blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/no_wifi_text" />
+        app:layout_constraintTop_toBottomOf="@+id/no_wifi_text"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

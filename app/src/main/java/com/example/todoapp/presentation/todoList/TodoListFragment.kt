@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,6 +21,7 @@ import com.example.todoapp.presentation.todoList.TodoListViewModel.State
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
+
 class TodoListFragment : Fragment(), Callback {
 
     private var _binding: FragmetTodolistBinding? = null
@@ -30,7 +33,7 @@ class TodoListFragment : Fragment(), Callback {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmetTodolistBinding.inflate(inflater, container, false)
         return binding.root
@@ -65,9 +68,13 @@ class TodoListFragment : Fragment(), Callback {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
                     viewModel.states.collect { state ->
+                        binding.errorTodolist.root.isVisible = state is State.NoNetwork
+                        binding.todolistLayout.root.isVisible = state is State.Success
+                        binding.progressTodolist.root.isVisible = state is State.Loading
                         when (state) {
                             is State.Success -> showSuccessState(state)
                             is State.Loading -> showLoadingState()
+                            State.NoNetwork -> showNoNetworkState()
                         }
                     }
                 }
@@ -82,40 +89,46 @@ class TodoListFragment : Fragment(), Callback {
         }
     }
 
-    private fun showLoadingState() {
-        binding.progressTodolist.visibility = View.VISIBLE
-    }
-
     private fun showErrorAction(state: Actions.Error, view: View) {
         Snackbar.make(
             view, state.messageID,
             Snackbar.LENGTH_LONG
-        ).show()
+        ).setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
+    }
+
+    private fun showLoadingState() {
+        //No action required
+    }
+
+    private fun showNoNetworkState() {
+        //No action required
     }
 
     private fun showSuccessState(state: State.Success) {
-        binding.progressTodolist.visibility = View.GONE
-        binding.addButton.visibility = View.VISIBLE
+        binding.todolistLayout.addButton.visibility = View.VISIBLE
         todoAdapter.setListTodos(state.items)
         if (state.isHidden) {
-            binding.toolbarIcon.setImageResource(R.drawable.visible)
+            binding.todolistLayout.toolbarIcon.setImageResource(R.drawable.visible)
         } else {
-            binding.toolbarIcon.setImageResource(R.drawable.visible_off)
+            binding.todolistLayout.toolbarIcon.setImageResource(R.drawable.visible_off)
         }
-        binding.toolbarSubtitle.text = getString(R.string.toolbar_subtitle, state.doneCount)
+        binding.todolistLayout.toolbarSubtitle.text = getString(R.string.toolbar_subtitle, state.doneCount)
 
     }
 
     private fun setUpUI() {
         val layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-        binding.toolbarIcon.setOnClickListener {
+        binding.todolistLayout.recyclerView.adapter = todoAdapter
+        binding.todolistLayout.recyclerView.layoutManager = layoutManager
+
+        binding.todolistLayout.toolbarIcon.setOnClickListener {
             viewModel.onHideClick()
         }
-        binding.recyclerView.adapter = todoAdapter
-        binding.recyclerView.layoutManager = layoutManager
-
-        binding.addButton.setOnClickListener {
+        binding.errorTodolist.retryButton.setOnClickListener {
+            viewModel.onRetryClick()
+        }
+        binding.todolistLayout.addButton.setOnClickListener {
             parentFragmentManager
                 .beginTransaction()
                 .replace(R.id.fragment_container_view, AddTodoFragment())

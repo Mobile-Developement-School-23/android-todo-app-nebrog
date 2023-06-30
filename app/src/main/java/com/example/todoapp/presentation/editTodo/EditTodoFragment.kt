@@ -106,7 +106,7 @@ class EditTodoFragment : SoloTodoFragment() {
         Snackbar.make(
             view, state.messageID,
             Snackbar.LENGTH_LONG
-        ).show()
+        ).setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
     }
 
     private fun showSuccessState(state: Success) {

@@ -16,6 +16,6 @@
     <string name="save_error">Не удалось сохранить заметку!</string>
     <string name="get_error">Не удалось получить заметку!</string>
     <string name="update_error">Не удалось обновить заметку!</string>
-    <string name="internet_error">Отсутсвует интернет подключение.</string>
+    <string name="internet_error">Отсутсвует интернет подключение</string>
     <string name="retry">Повторить</string>
 </resources>
