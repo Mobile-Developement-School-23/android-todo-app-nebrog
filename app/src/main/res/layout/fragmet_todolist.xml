@@ -99,8 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:visibility="gone"
-        android:background="@color/back_light_primary"
-        >
+        android:background="@color/back_light_primary">
         <ProgressBar
             style="?android:attr/progressBarStyleInverse"
             android:layout_width="120dp"
@@ -108,5 +107,4 @@
             android:layout_gravity="center"
             android:background="@color/back_light_primary" />
     </FrameLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

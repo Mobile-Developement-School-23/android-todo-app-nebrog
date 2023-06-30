@@ -4,6 +4,7 @@ import android.provider.Settings
 import com.example.todoapp.App
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository
+import com.example.todoapp.domain.TodoRepository.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,14 +22,14 @@ object NetworkRepository : TodoRepository {
     private val revision = MutableStateFlow(0)
 
 
-    override suspend fun addTodo(item: TodoItem): TodoRepository.Result<Unit> {
+    override suspend fun addTodo(item: TodoItem): Result<Unit> {
         return networkCall(action = {
             val result = service.addTodo(revision.value, TodoItemRequest(converterRequest(item)))
             revision.value = result.revision
         })
     }
 
-    override suspend fun deleteTodo(id: String, item: TodoItem): TodoRepository.Result<Unit> {
+    override suspend fun deleteTodo(id: String, item: TodoItem): Result<Unit> {
         return networkCall(action = {
             val result = service.deleteTodo(revision.value, id, TodoItemRequest(converterRequest(item)))
             revision.value = result.revision
@@ -36,7 +37,7 @@ object NetworkRepository : TodoRepository {
 
     }
 
-    override suspend fun updateTodo(item: TodoItem): TodoRepository.Result<Unit> {
+    override suspend fun updateTodo(item: TodoItem): Result<Unit> {
         return networkCall(action = {
             val result = service.updateTodo(revision.value, item.itemID, TodoItemRequest(converterRequest(item)))
             revision.value = result.revision
@@ -44,7 +45,7 @@ object NetworkRepository : TodoRepository {
     }
 
 
-    override suspend fun getTodo(id: String): TodoRepository.Result<TodoItem> {
+    override suspend fun getTodo(id: String): Result<TodoItem> {
         return networkCall(action = {
             val response = service.getTodo(id)
             val todo = converterResponse(response.element)
@@ -53,7 +54,7 @@ object NetworkRepository : TodoRepository {
         })
     }
 
-    override suspend fun getAllTodos(): TodoRepository.Result<List<TodoItem>> {
+    override suspend fun getAllTodos(): Result<List<TodoItem>> {
         return networkCall(action = {
             val response = service.getTodoList()
             val listTodoItem = response.list.map { pojo: TodoItemPOJO ->
@@ -64,12 +65,24 @@ object NetworkRepository : TodoRepository {
         })
     }
 
+    override suspend fun updateAllTodos(updateList: List<TodoItem>): Result<List<TodoItem>> {
+        return networkCall {
+            val listUpdateTodoItem = updateList.map { todo -> converterRequest(todo) }
+            val response = service.updateTodosOnServer(revision.value, TodoItemListRequest(listUpdateTodoItem))
+            val listTodoItem = response.list.map { pojo: TodoItemPOJO ->
+                converterResponse(pojo)
+            }
+            revision.value = response.revision
+            return@networkCall listTodoItem
+        }
+    }
+
     override fun observeTodos(): Flow<List<TodoItem>> {
         return revision.map {
             val result = getAllTodos()
             val list = when (result) {
-                is TodoRepository.Result.Failure -> throw Exception()
-                is TodoRepository.Result.Success -> result.value
+                is Result.Failure -> throw IOException()
+                is Result.Success -> result.value
             }
             return@map list
         }
@@ -115,16 +128,14 @@ object NetworkRepository : TodoRepository {
         )
     }
 
-    private suspend fun <R> networkCall(action: suspend () -> R): TodoRepository.Result<R> {
+    private suspend fun <R> networkCall(action: suspend () -> R): Result<R> {
         try {
             val result: R = withContext(Dispatchers.IO) { action() }
-            return TodoRepository.Result.Success(result)
+            return Result.Success(result)
         } catch (e: HttpException) {
-            return TodoRepository.Result.Failure(e.message())
+            return Result.Failure(e.message())
         } catch (e: IOException) {
-            return TodoRepository.Result.Failure(e.message.toString())
-        } catch (e: Exception) {
-            return TodoRepository.Result.Failure(e.message.toString())
+            return Result.Failure(e.message.toString())
         }
 
     }

@@ -2,6 +2,7 @@ package com.example.todoapp.data
 
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository
+import com.example.todoapp.domain.TodoRepository.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import java.util.Calendar
@@ -9,6 +10,7 @@ import java.util.UUID
 import kotlin.random.Random
 
 object StubTodoRepository : TodoRepository {
+
 
     private val random = Random(System.currentTimeMillis())
     private val todos = MutableList(30) { getRandomTodo() }
@@ -19,44 +21,48 @@ object StubTodoRepository : TodoRepository {
         flow.tryEmit(todos)
     }
 
-    override suspend fun addTodo(item: TodoItem): TodoRepository.Result<Unit> {
+    override suspend fun addTodo(item: TodoItem): Result<Unit> {
         val itemWithID = item.copy(itemID = UUID.randomUUID().toString())
         todos.add(itemWithID)
         flow.emit(todos.toList())
-        return TodoRepository.Result.Success(Unit)
+        return Result.Success(Unit)
     }
 
-    override suspend fun deleteTodo(id: String, item: TodoItem): TodoRepository.Result<Unit> {
+    override suspend fun deleteTodo(id: String, item: TodoItem): Result<Unit> {
         todos.removeIf { it.itemID == item.itemID }
         flow.emit(todos.toList())
-        return TodoRepository.Result.Success(Unit)
+        return Result.Success(Unit)
     }
 
-    override suspend fun updateTodo(item: TodoItem): TodoRepository.Result<Unit> {
+    override suspend fun updateTodo(item: TodoItem): Result<Unit> {
         val index = todos.indexOfFirst { it.itemID == item.itemID }
         if (index == -1) {
-            return TodoRepository.Result.Failure("No item with such ID")
+            return Result.Failure("No item with such ID")
         }
         todos[index] = item
         flow.emit(todos.toList())
-        return TodoRepository.Result.Success(Unit)
+        return Result.Success(Unit)
     }
 
-    override suspend fun getTodo(id: String): TodoRepository.Result<TodoItem> {
+    override suspend fun getTodo(id: String): Result<TodoItem> {
         val index = todos.indexOfFirst { it.itemID == id }
         if (index == -1) {
-            return TodoRepository.Result.Failure("No item with such ID")
+            return Result.Failure("No item with such ID")
         }
         flow.emit(todos.toList())
-        return TodoRepository.Result.Success(todos[index])
+        return Result.Success(todos[index])
     }
 
     override fun observeTodos(): Flow<List<TodoItem>> {
         return flow
     }
 
-    override suspend fun getAllTodos(): TodoRepository.Result<List<TodoItem>> {
-        return TodoRepository.Result.Success(todos.toList())
+    override suspend fun getAllTodos(): Result<List<TodoItem>> {
+        return Result.Success(todos.toList())
+    }
+
+    override suspend fun updateAllTodos(updateList: List<TodoItem>): Result<List<TodoItem>> {
+        TODO("Not yet implemented")
     }
 
     private fun getRandomTodo(): TodoItem {
