@@ -14,7 +14,9 @@ import com.example.todoapp.R
 import com.example.todoapp.databinding.FragmetTodolistBinding
 import com.example.todoapp.presentation.addTodo.AddTodoFragment
 import com.example.todoapp.presentation.editTodo.EditTodoFragment
+import com.example.todoapp.presentation.todoList.TodoListViewModel.Actions
 import com.example.todoapp.presentation.todoList.TodoListViewModel.State
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 class TodoListFragment : Fragment(), Callback {
@@ -37,17 +39,7 @@ class TodoListFragment : Fragment(), Callback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpUI()
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.states.collect { state ->
-                    when (state) {
-                        is State.Loading -> showLoadingState()
-                        is State.Success -> showSuccessState(state)
-                        is State.Error -> showErrorState()
-                    }
-                }
-            }
-        }
+        setUpCollects(view)
     }
 
     override fun onDestroyView() {
@@ -68,11 +60,42 @@ class TodoListFragment : Fragment(), Callback {
             .commit()
     }
 
-    private fun showLoadingState() {}
+    private fun setUpCollects(view: View) {
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.states.collect { state ->
+                        when (state) {
+                            is State.Success -> showSuccessState(state)
+                            is State.Loading -> showLoadingState()
+                        }
+                    }
+                }
+                launch {
+                    viewModel.actions.collect { action ->
+                        when (action) {
+                            is Actions.Error -> showErrorAction(action, view)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
-    private fun showErrorState() {}
+    private fun showLoadingState() {
+        binding.progressTodolist.visibility = View.VISIBLE
+    }
+
+    private fun showErrorAction(state: Actions.Error, view: View) {
+        Snackbar.make(
+            view, state.messageID,
+            Snackbar.LENGTH_LONG
+        ).show()
+    }
 
     private fun showSuccessState(state: State.Success) {
+        binding.progressTodolist.visibility = View.GONE
+        binding.addButton.visibility = View.VISIBLE
         todoAdapter.setListTodos(state.items)
         if (state.isHidden) {
             binding.toolbarIcon.setImageResource(R.drawable.visible)

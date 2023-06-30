@@ -6,7 +6,8 @@ import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import java.io.IOException
@@ -16,26 +17,29 @@ import java.util.Date
 object NetworkRepository : TodoRepository {
 
     private val service = RetrofitService.getInstance()
-    private var revision = 0
     private val androidID = Settings.Secure.getString(App.application.contentResolver, Settings.Secure.ANDROID_ID)
+    private val revision = MutableStateFlow(0)
 
 
     override suspend fun addTodo(item: TodoItem): TodoRepository.Result<Unit> {
         return networkCall(action = {
-            service.addTodo(revision, TodoItemRequest(converterRequest(item)))
+            val result = service.addTodo(revision.value, TodoItemRequest(converterRequest(item)))
+            revision.value = result.revision
         })
     }
 
     override suspend fun deleteTodo(id: String, item: TodoItem): TodoRepository.Result<Unit> {
         return networkCall(action = {
-            service.deleteTodo(revision, id, TodoItemRequest(converterRequest(item)))
+            val result = service.deleteTodo(revision.value, id, TodoItemRequest(converterRequest(item)))
+            revision.value = result.revision
         })
 
     }
 
     override suspend fun updateTodo(item: TodoItem): TodoRepository.Result<Unit> {
         return networkCall(action = {
-            service.updateTodo(revision, item.itemID, TodoItemRequest(converterRequest(item)))
+            val result = service.updateTodo(revision.value, item.itemID, TodoItemRequest(converterRequest(item)))
+            revision.value = result.revision
         })
     }
 
@@ -44,6 +48,7 @@ object NetworkRepository : TodoRepository {
         return networkCall(action = {
             val response = service.getTodo(id)
             val todo = converterResponse(response.element)
+            revision.value = response.revision
             return@networkCall todo
         })
     }
@@ -54,13 +59,20 @@ object NetworkRepository : TodoRepository {
             val listTodoItem = response.list.map { pojo: TodoItemPOJO ->
                 converterResponse(pojo)
             }
-            revision = response.revision
+            revision.value = response.revision
             return@networkCall listTodoItem
         })
     }
 
     override fun observeTodos(): Flow<List<TodoItem>> {
-        return flowOf()
+        return revision.map {
+            val result = getAllTodos()
+            val list = when (result) {
+                is TodoRepository.Result.Failure -> throw Exception()
+                is TodoRepository.Result.Success -> result.value
+            }
+            return@map list
+        }
     }
 
     private fun converterResponse(pojo: TodoItemPOJO): TodoItem {
@@ -110,6 +122,8 @@ object NetworkRepository : TodoRepository {
         } catch (e: HttpException) {
             return TodoRepository.Result.Failure(e.message())
         } catch (e: IOException) {
+            return TodoRepository.Result.Failure(e.message.toString())
+        } catch (e: Exception) {
             return TodoRepository.Result.Failure(e.message.toString())
         }
 
