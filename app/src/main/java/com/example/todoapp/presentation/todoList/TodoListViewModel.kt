@@ -15,6 +15,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 
 class TodoListViewModel : ViewModel() {
@@ -23,6 +25,7 @@ class TodoListViewModel : ViewModel() {
     private val mutableStates: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     private val mutableActions = MutableSharedFlow<Actions>(replay = 0)
     private val isHidden: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    private val isOnline = MutableStateFlow<Boolean>(true)
     private var collectJob: Job? = null
 
     val actions: MutableSharedFlow<Actions> = mutableActions
@@ -30,6 +33,7 @@ class TodoListViewModel : ViewModel() {
 
     init {
         loadContent()
+        observeForOnline()
     }
 
     fun onDoneClick(id: String, isDone: Boolean) {
@@ -50,7 +54,6 @@ class TodoListViewModel : ViewModel() {
                 return@launch
             }
         }
-
     }
 
     fun onHideClick() {
@@ -60,6 +63,10 @@ class TodoListViewModel : ViewModel() {
     fun onRetryClick() {
         mutableStates.value = State.Loading
         loadContent()
+    }
+
+    fun onOnlineChanged(isConnected: Boolean) {
+        isOnline.value = isConnected
     }
 
     private fun loadContent() {
@@ -90,6 +97,21 @@ class TodoListViewModel : ViewModel() {
         mutableStates.value = success
     }
 
+    private fun observeForOnline() {
+        viewModelScope.launch {
+            //.drop - пропустить первое значение, так как инициализирующее значение MutableStateFlow<Boolean>(true), при пересоздании фрагмента
+            // вьюмодель получает состояние isConnected еще раз (MutableSharedFlow не фильтрует одиковые значений), поэтому использую MutableStateFlow
+            //.debounce - нужен при переключении с Wi-Fi на 4G, потому что в этот момент connectivity быстро меняет свое значение несколько раз
+            isOnline.drop(1).debounce(ONLINE_DEBOUNCE_TIME).collect { isOnline ->
+                if (isOnline) {
+                    onRetryClick()
+                } else {
+                    mutableStates.value = State.NoNetwork
+                }
+            }
+        }
+    }
+
 
     sealed interface State {
         data class Success(
@@ -107,5 +129,9 @@ class TodoListViewModel : ViewModel() {
     sealed interface Actions {
 
         class Error(@StringRes val messageID: Int) : Actions
+    }
+
+    companion object {
+        private const val ONLINE_DEBOUNCE_TIME = 300L
     }
 }

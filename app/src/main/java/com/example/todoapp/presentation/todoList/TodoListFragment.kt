@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todoapp.R
 import com.example.todoapp.databinding.FragmetTodolistBinding
 import com.example.todoapp.presentation.addTodo.AddTodoFragment
+import com.example.todoapp.presentation.connectivity.NetworkChangeListener
 import com.example.todoapp.presentation.editTodo.EditTodoFragment
 import com.example.todoapp.presentation.todoList.TodoListViewModel.Actions
 import com.example.todoapp.presentation.todoList.TodoListViewModel.State
@@ -26,6 +27,9 @@ class TodoListFragment : Fragment(), Callback {
 
     private var _binding: FragmetTodolistBinding? = null
     private val binding get() = _binding!!
+    private val networkListener = NetworkChangeListener { isConnected ->
+        viewModel.onOnlineChanged(isConnected)
+    }
 
     private val viewModel: TodoListViewModel by viewModels()
     private val todoAdapter = TodoAdapter(this)
@@ -36,6 +40,7 @@ class TodoListFragment : Fragment(), Callback {
         savedInstanceState: Bundle?,
     ): View {
         _binding = FragmetTodolistBinding.inflate(inflater, container, false)
+        NetworkChangeListener.register(requireContext(), networkListener)
         return binding.root
     }
 
@@ -48,6 +53,7 @@ class TodoListFragment : Fragment(), Callback {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        NetworkChangeListener.unregister(requireContext(), networkListener)
     }
 
     override fun onClickCheckBox(id: String, isDone: Boolean) {
