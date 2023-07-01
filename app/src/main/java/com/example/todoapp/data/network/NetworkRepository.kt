@@ -1,11 +1,13 @@
 package com.example.todoapp.data.network
 
 import android.provider.Settings
+import android.util.Log
 import com.example.todoapp.App
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository
-import com.example.todoapp.domain.TodoRepository.*
+import com.example.todoapp.domain.TodoRepository.Result
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -130,7 +132,7 @@ object NetworkRepository : TodoRepository {
 
     private suspend fun <R> networkCall(action: suspend () -> R): Result<R> {
         try {
-            val result: R = withContext(Dispatchers.IO) { action() }
+            val result: R = withContext(Dispatchers.IO) { withRetry(action) }
             return Result.Success(result)
         } catch (e: HttpException) {
             return Result.Failure(e.message())
@@ -139,6 +141,35 @@ object NetworkRepository : TodoRepository {
         }
 
     }
+
+    private suspend fun <R> withRetry(action: suspend () -> R): R {
+        var attempt = 0
+        lateinit var exception:Exception
+        while (attempt != MAX_RETRY_ATTEMPTS) {
+            try {
+                delay(attempt * RETRY_DELAY_MS)
+                return action()
+            } catch (e: HttpException) {
+                if (!RETRY_IS_ALLOWED.contains(e.code())) {
+                    throw e
+                } else{
+                    exception = e
+                }
+            } catch (e: IOException) {
+                exception = e
+            } finally {
+                attempt++
+            }
+            Log.w("TAG", "Попытка №$attempt")
+        }
+        throw exception
+    }
+
+    private const val RETRY_DELAY_MS = 300L
+    private const val MAX_RETRY_ATTEMPTS = 3
+    private val RETRY_IS_ALLOWED = setOf(
+        404, 408, 419, 425, 449, 499, 503, 504, 509, 520, 521, 522, 523, 524, 525, 526
+    )
 
 }
 
