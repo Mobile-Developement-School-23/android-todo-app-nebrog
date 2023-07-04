@@ -62,7 +62,7 @@ class EditTodoViewModel : ViewModel() {
         val item = getSuccessState()?.item ?: return
         viewModelScope.launch {
             mutableStates.value = State.Loading
-            val result = repository.deleteTodo(item.itemID, item)
+            val result = repository.deleteTodo(item.itemID)
             when (result) {
                 is Failure -> {
                     mutableStates.value = State.Success(item)

@@ -28,8 +28,8 @@ object StubTodoRepository : TodoRepository {
         return Result.Success(Unit)
     }
 
-    override suspend fun deleteTodo(id: String, item: TodoItem): Result<Unit> {
-        todos.removeIf { it.itemID == item.itemID }
+    override suspend fun deleteTodo(id: String): Result<Unit> {
+        todos.removeIf { it.itemID == id }
         flow.emit(todos.toList())
         return Result.Success(Unit)
     }

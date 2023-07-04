@@ -6,8 +6,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.HTTP
 import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -73,10 +73,9 @@ interface RetrofitService {
         @Body todoItem: TodoItemRequest
     ): TodoItemResponse
 
-    @HTTP(method = "DELETE", path = "list/{id}", hasBody = true)
+    @DELETE("list/{id}")
     suspend fun deleteTodo(
         @Header("X-Last-Known-Revision") revision: Int,
-        @Path("id") id: String,
-        @Body todoItem: TodoItemRequest
+        @Path("id") id: String
     ): TodoItemResponse
 }
