@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todoapp.R
-import com.example.todoapp.data.network.NetworkRepository
+import com.example.todoapp.data.database.OfflineRepository
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository.Result.Failure
 import com.example.todoapp.domain.TodoRepository.Result.Success
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class TodoListViewModel : ViewModel() {
 
-    private val repository = NetworkRepository
+    private val repository = OfflineRepository
     private val mutableStates: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     private val mutableActions = MutableSharedFlow<Actions>(replay = 0)
     private val isHidden: MutableStateFlow<Boolean> = MutableStateFlow(true)

@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todoapp.R
-import com.example.todoapp.data.network.NetworkRepository
+import com.example.todoapp.data.database.OfflineRepository
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository.Result.Failure
 import com.example.todoapp.domain.TodoRepository.Result.Success
@@ -16,7 +16,7 @@ import java.util.Date
 
 class EditTodoViewModel : ViewModel() {
 
-    private val repository = NetworkRepository
+    private val repository = OfflineRepository
     private val mutableStates = MutableStateFlow<State>(State.Loading)
     private val mutableActions = MutableSharedFlow<Actions>(replay = 0)
     val states: MutableStateFlow<State> = mutableStates
