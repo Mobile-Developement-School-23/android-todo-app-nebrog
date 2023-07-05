@@ -1,42 +1,130 @@
 package com.example.todoapp.presentation.editTodo
 
-import androidx.fragment.app.Fragment
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
-import com.example.todoapp.data.StubTodoRepository
+import androidx.lifecycle.viewModelScope
+import com.example.todoapp.R
+import com.example.todoapp.data.network.NetworkRepository
 import com.example.todoapp.domain.TodoItem
+import com.example.todoapp.domain.TodoRepository.Result.Failure
+import com.example.todoapp.domain.TodoRepository.Result.Success
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
 class EditTodoViewModel : ViewModel() {
 
-    private val repository = StubTodoRepository
+    private val repository = NetworkRepository
+    private val mutableStates = MutableStateFlow<State>(State.Loading)
+    private val mutableActions = MutableSharedFlow<Actions>(replay = 0)
+    val states: MutableStateFlow<State> = mutableStates
+    val actions: MutableSharedFlow<Actions> = mutableActions
 
-    fun onChangeTodo(id: String, text: String, priority: TodoItem.Priority, deadline: Date?, doneFlag: Boolean, dateOfCreation: Date, fragment: Fragment) {
-        val todo = TodoItem(
-            itemID = id,
-            itemText = text,
-            itemPriority = priority,
-            deadline = deadline,
-            doneFlag = doneFlag,
-            dateOfCreation = dateOfCreation,
-            dateOfChanges = Calendar.getInstance().time
-        )
-        repository.updateTodo(todo)
-        backTodoList(fragment)
+    fun init(todoId: String) {
+        viewModelScope.launch {
+            mutableStates.value = State.Loading
+            val result = repository.getTodo(todoId)
+            when (result) {
+                is Failure -> {
+                    mutableActions.emit(Actions.Error(R.string.get_error))
+                    mutableActions.emit(Actions.Exit)
+                }
+
+                is Success -> {
+                    mutableActions.emit(Actions.SetText(result.value.itemText))
+                    mutableStates.value = State.Success(result.value)
+                }
+            }
+        }
     }
 
-    fun onDeleteTodo(id: String, fragment: Fragment) {
-        repository.deleteTodo(id)
-        backTodoList(fragment)
+    fun onSaveClick(text: String) {
+        val state: State.Success = getSuccessState() ?: return
+        val dateOfChanges = Calendar.getInstance().time
+        val updatedItem = state.item.copy(dateOfChanges = dateOfChanges, itemText = text)
+        viewModelScope.launch {
+            mutableStates.value = State.Loading
+            val result = repository.updateTodo(updatedItem)
+            when (result) {
+                is Failure -> {
+                    mutableStates.value = State.Success(updatedItem)
+                    mutableActions.emit(Actions.Error(R.string.save_error))
+                }
+
+                is Success -> mutableActions.emit(Actions.Exit)
+            }
+        }
     }
 
-    fun getTodo(id: String): TodoItem {
-        return repository.getTodo(id)
+    fun onDeleteTodo() {
+        val item = getSuccessState()?.item ?: return
+        viewModelScope.launch {
+            mutableStates.value = State.Loading
+            val result = repository.deleteTodo(item.itemID, item)
+            when (result) {
+                is Failure -> {
+                    mutableStates.value = State.Success(item)
+                    mutableActions.emit(Actions.Error(R.string.delete_error))
+                }
+
+                is Success -> mutableActions.emit(Actions.Exit)
+            }
+        }
     }
 
-    private fun backTodoList(fragment: Fragment) {
-        fragment
-            .parentFragmentManager
-            .popBackStackImmediate()
+    fun onDeadlineChanged(date: Date) {
+        val state: State.Success = getSuccessState() ?: return
+        val updatedItem = state.item.copy(deadline = date)
+        mutableStates.value = State.Success(updatedItem)
+    }
+
+    fun onPriorityChanged(priority: TodoItem.Priority) {
+        val state: State.Success = getSuccessState() ?: return
+        val updatedItem = state.item.copy(itemPriority = priority)
+        mutableStates.value = State.Success(updatedItem)
+    }
+
+    fun onCheckedChanged(isChecked: Boolean) {
+        val state: State.Success = getSuccessState() ?: return
+        if (!isChecked) {
+            val updatedItem = state.item.copy(deadline = null)
+            mutableStates.value = State.Success(updatedItem)
+        } else {
+            val updatedItem = state.item.copy(deadline = Calendar.getInstance().time)
+            mutableStates.value = State.Success(updatedItem)
+            viewModelScope.launch { mutableActions.emit(Actions.CalendarPicker) }
+        }
+    }
+
+    fun onCalendarCancel() {
+        val state: State.Success = getSuccessState() ?: return
+        val updatedItem = state.item.copy(deadline = null)
+        mutableStates.value = State.Success(updatedItem)
+    }
+
+    fun onDeadlineClick() {
+        viewModelScope.launch { mutableActions.emit(Actions.CalendarPicker) }
+    }
+
+    private fun getSuccessState(): State.Success? {
+        return states.value as? State.Success
+    }
+
+    sealed interface State {
+        data class Success(val item: TodoItem) : State
+
+        object Loading : State
+    }
+
+    sealed interface Actions {
+        object Exit : Actions
+
+        object CalendarPicker : Actions
+
+        class SetText(val text: String) : Actions
+
+        class Error(@StringRes val messageID: Int) : Actions
     }
 }

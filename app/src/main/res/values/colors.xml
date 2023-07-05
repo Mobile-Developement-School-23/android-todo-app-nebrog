@@ -32,4 +32,5 @@
     <color name="back_dark_primary">#161618</color>
     <color name="back_dark_secondary">#252528</color>
     <color name="back_dark_elevated">#3C3C3F</color>
+    <color name="cancel_background">#FFFFFF</color>
 </resources>

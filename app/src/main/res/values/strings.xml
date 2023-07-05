@@ -12,4 +12,10 @@
     <string name="cancel">Отмена</string>
     <string name="toolbar_subtitle">Выполнено — %1$d</string>
     <string name="title">Мои дела</string>
+    <string name="delete_error">Не удалось удалить заметку!</string>
+    <string name="save_error">Не удалось сохранить заметку!</string>
+    <string name="get_error">Не удалось получить заметку!</string>
+    <string name="update_error">Не удалось обновить заметку!</string>
+    <string name="internet_error">Отсутсвует интернет подключение</string>
+    <string name="retry">Повторить</string>
 </resources>
