@@ -31,9 +31,9 @@ object NetworkRepository : TodoRepository {
         })
     }
 
-    override suspend fun deleteTodo(id: String, item: TodoItem): Result<Unit> {
+    override suspend fun deleteTodo(id: String): Result<Unit> {
         return networkCall(action = {
-            val result = service.deleteTodo(revision.value, id, TodoItemRequest(converterRequest(item)))
+            val result = service.deleteTodo(revision.value, id)
             revision.value = result.revision
         })
 
