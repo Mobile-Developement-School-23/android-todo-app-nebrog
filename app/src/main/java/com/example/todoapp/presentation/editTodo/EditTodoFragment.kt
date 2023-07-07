@@ -8,26 +8,33 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.todoapp.App
 import com.example.todoapp.R
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.presentation.SoloTodoFragment
 import com.example.todoapp.presentation.editTodo.EditTodoViewModel.Actions
 import com.example.todoapp.presentation.editTodo.EditTodoViewModel.State.Loading
 import com.example.todoapp.presentation.editTodo.EditTodoViewModel.State.Success
+import com.example.todoapp.presentation.editTodo.di.EditTodoFragmentComponent
+import com.example.todoapp.presentation.viewmodel.vladViewModels
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.util.Date
 
 class EditTodoFragment : SoloTodoFragment() {
 
-    private val viewModel: EditTodoViewModel by viewModels()
+    lateinit var fragmentComponent: EditTodoFragmentComponent
+        private set
+
+    private val viewModel by vladViewModels<EditTodoViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val appComponent = (requireContext().applicationContext as App).appComponent
+        fragmentComponent = appComponent.getEditTodoFragmentComponentFactory().create()
         if (savedInstanceState == null) {
             val todoID = requireArguments().getString(ARGUMENT_KEY) as String
             viewModel.init(todoID)
@@ -122,21 +129,18 @@ class EditTodoFragment : SoloTodoFragment() {
 
     private fun showCalendarPicker(context: Context) {
         val c = Calendar.getInstance()
-
         val datePickerDialog = DatePickerDialog(
             context,
             { _, mYear, mMonth, mDay ->
                 viewModel.onDeadlineChanged(Date(mYear - 1900, mMonth, mDay))
             }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)
         )
-
         datePickerDialog.setButton(
             DialogInterface.BUTTON_NEGATIVE,
             getString(R.string.cancel)
         ) { _, _ ->
             viewModel.onCalendarCancel()
         }
-
         datePickerDialog.show()
     }
 

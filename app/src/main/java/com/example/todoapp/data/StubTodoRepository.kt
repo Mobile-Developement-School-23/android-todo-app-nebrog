@@ -11,7 +11,6 @@ import kotlin.random.Random
 
 object StubTodoRepository : TodoRepository {
 
-
     private val random = Random(System.currentTimeMillis())
     private val todos = MutableList(30) { getRandomTodo() }
     private val flow = MutableSharedFlow<List<TodoItem>>(replay = 1)
@@ -83,5 +82,4 @@ object StubTodoRepository : TodoRepository {
             dateOfChanges = changeDate,
         )
     }
-
 }

@@ -1,6 +1,7 @@
 package com.example.todoapp.data.database
 
-import com.example.todoapp.App
+import androidx.room.Transaction
+import com.example.todoapp.di.RepositoryScope
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository
 import com.example.todoapp.domain.TodoRepository.Result
@@ -10,13 +11,10 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.util.Date
+import javax.inject.Inject
 
-
-object OfflineRepository : TodoRepository {
-
-    private val database = AppDatabase.create(App.application)
-    private val todoItemDao = database.todoDao()
-
+@RepositoryScope
+class OfflineRepository @Inject constructor(private val todoItemDao: TodoItemDao): TodoRepository {
 
     override suspend fun addTodo(item: TodoItem): Result<Unit> {
         return databaseCall {
@@ -54,6 +52,7 @@ object OfflineRepository : TodoRepository {
         }
     }
 
+    @Transaction
     override suspend fun updateAllTodos(updateList: List<TodoItem>): Result<List<TodoItem>> {
         return databaseCall {
             todoItemDao.deleteAllTodos()
@@ -83,7 +82,6 @@ object OfflineRepository : TodoRepository {
             todo.dateOfCreation.time,
             todo.dateOfChanges?.time
         )
-
     }
 
     private fun convertFromEntity(todoEntity: EntityTodoItem): TodoItem {
@@ -96,7 +94,6 @@ object OfflineRepository : TodoRepository {
             Date(todoEntity.dateOfCreation),
             todoEntity.dateOfChanges?.let { Date(it) }
         )
-
     }
 
     private suspend fun <R> databaseCall(action: suspend () -> R): Result<R> {

@@ -8,26 +8,33 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.example.todoapp.App
 import com.example.todoapp.R
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.presentation.SoloTodoFragment
 import com.example.todoapp.presentation.addTodo.AddTodoViewModel.Actions
 import com.example.todoapp.presentation.addTodo.AddTodoViewModel.State.Loading
 import com.example.todoapp.presentation.addTodo.AddTodoViewModel.State.Success
+import com.example.todoapp.presentation.addTodo.di.AddTodoFragmentComponent
+import com.example.todoapp.presentation.viewmodel.vladViewModels
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.util.Date
 
 class AddTodoFragment : SoloTodoFragment() {
 
-    private val viewModel: AddTodoViewModel by viewModels()
+    lateinit var fragmentComponent: AddTodoFragmentComponent
+        private set
+
+    private val viewModel by vladViewModels<AddTodoViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val appComponent = (requireContext().applicationContext as App).appComponent
+        fragmentComponent = appComponent.getAddTodoFragmentComponentFactory().create()
         setUpCollects(view.context, view)
         setUpUI()
     }
@@ -54,7 +61,6 @@ class AddTodoFragment : SoloTodoFragment() {
                 }
             }
         }
-
     }
 
     private fun setUpUI() {
@@ -95,28 +101,24 @@ class AddTodoFragment : SoloTodoFragment() {
 
     private fun showSuccessState(state: Success) {
         binding.progressAddEdit.visibility = View.GONE
-
         internalSetDeadline(state.item.deadline)
         internalSetPriority(state.item.itemPriority)
     }
 
     private fun showCalendarPicker(context: Context) {
         val c = Calendar.getInstance()
-
         val datePickerDialog = DatePickerDialog(
             context,
             { _, mYear, mMonth, mDay ->
                 viewModel.onDeadlineChanged(Date(mYear - 1900, mMonth, mDay))
             }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)
         )
-
         datePickerDialog.setButton(
             DialogInterface.BUTTON_NEGATIVE,
             getString(R.string.cancel)
         ) { _, _ ->
             viewModel.onCalendarCancel()
         }
-
         datePickerDialog.show()
     }
 

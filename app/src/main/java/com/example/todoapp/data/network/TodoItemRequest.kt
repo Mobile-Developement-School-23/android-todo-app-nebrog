@@ -6,4 +6,3 @@ data class TodoItemRequest(
     @SerializedName("element")
     val element: TodoItemPOJO,
 )
-

@@ -92,6 +92,18 @@
         app:shapeAppearance="@drawable/oval"
         app:shapeAppearanceOverlay="@drawable/oval"
         app:tint="@color/white" />
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:visibility="visible"
+        android:layout_gravity="bottom"
+        android:backgroundTint="@color/label_light_tertiary">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/label_light_tertiary"/>
+    </FrameLayout>
 
 
 

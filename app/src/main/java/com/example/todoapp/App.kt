@@ -1,27 +1,37 @@
 package com.example.todoapp
 
 import android.app.Application
+import androidx.work.Configuration
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.NetworkType
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.todoapp.data.synchronize.MyWorker
+import com.example.todoapp.data.synchronize.MyWorkerFactory
+import com.example.todoapp.di.AppComponent
+import com.example.todoapp.di.DaggerAppComponent
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 
-class App : Application() {
+class App : Application(), Configuration.Provider {
 
-    companion object {
-        lateinit var application: Application
-        private const val WORKNAME = "MyWorker"
+    lateinit var appComponent: AppComponent
+        private set
 
-    }
+    @Inject
+    lateinit var workerFactory: MyWorkerFactory
 
     override fun onCreate() {
         super.onCreate()
-        application = this
+        appComponent = DaggerAppComponent.factory().create(this)
+        appComponent.inject(this)
         runPeriodicWorkRequest()
+    }
+
+    override fun getWorkManagerConfiguration(): Configuration {
+        return Configuration.Builder().setWorkerFactory(workerFactory).build()
     }
 
     private fun runPeriodicWorkRequest() {
@@ -30,12 +40,16 @@ class App : Application() {
             .build()
         val workRequest = PeriodicWorkRequestBuilder<MyWorker>(
             repeatInterval = 8, TimeUnit.HOURS
-        ).setConstraints(constraints).setInitialDelay(8L, TimeUnit.HOURS).build()
+        ).setConstraints(constraints).setInitialDelay(DURATION, TimeUnit.HOURS).build()
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             WORKNAME,
             ExistingPeriodicWorkPolicy.UPDATE,
             workRequest
         )
     }
-}
 
+    companion object {
+        private const val WORKNAME = "MyWorker"
+        private const val DURATION = 8L
+    }
+}
