@@ -42,16 +42,18 @@ class NetworkRepository @Inject constructor(
             val result = service.deleteTodo(revision.getRevision(), id)
             revision.setRevision(result.revision)
         })
-
     }
 
     override suspend fun updateTodo(item: TodoItem): Result<Unit> {
         return networkCall(action = {
-            val result = service.updateTodo(revision.getRevision(), item.itemID, TodoItemRequest(converterRequest(item)))
+            val result = service.updateTodo(
+                revision.getRevision(),
+                item.itemID,
+                TodoItemRequest(converterRequest(item))
+            )
             revision.setRevision(result.revision)
         })
     }
-
 
     override suspend fun getTodo(id: String): Result<TodoItem> {
         return networkCall(action = {
@@ -90,7 +92,6 @@ class NetworkRepository @Inject constructor(
     }
 
     private fun converterResponse(pojo: TodoItemPOJO): TodoItem {
-
         val priority = when (pojo.itemPriority) {
             TodoItemPOJO.Priority.LOW -> TodoItem.Priority.LOW
             TodoItemPOJO.Priority.NORMAL -> TodoItem.Priority.NORMAL
@@ -109,12 +110,10 @@ class NetworkRepository @Inject constructor(
     }
 
     private fun converterRequest(todoItem: TodoItem): TodoItemPOJO {
-
         val priority = when (todoItem.itemPriority) {
             TodoItem.Priority.LOW -> TodoItemPOJO.Priority.LOW
             TodoItem.Priority.NORMAL -> TodoItemPOJO.Priority.NORMAL
             TodoItem.Priority.HIGH -> TodoItemPOJO.Priority.HIGH
-
         }
 
         return TodoItemPOJO(
@@ -138,7 +137,6 @@ class NetworkRepository @Inject constructor(
         } catch (e: IOException) {
             return Result.Failure(e.message.toString())
         }
-
     }
 
     private suspend fun <R> withRetry(action: suspend () -> R): R {

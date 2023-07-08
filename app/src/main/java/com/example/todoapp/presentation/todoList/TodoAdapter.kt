@@ -113,7 +113,6 @@ class TodoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 }
 
-
 interface Callback {
     fun onClickCheckBox(id: String, isDone: Boolean)
     fun onClickText(id: String)

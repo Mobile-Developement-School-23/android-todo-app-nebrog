@@ -20,7 +20,7 @@ abstract class SoloTodoFragment : Fragment(R.layout.fragmet_add_todo) {
 
     private var _binding: FragmetAddTodoBinding? = null
     protected val binding get() = _binding!!
-        
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -45,19 +45,22 @@ abstract class SoloTodoFragment : Fragment(R.layout.fragmet_add_todo) {
             binding.deadlineDate.text = mDate
             binding.switchButton.isChecked = true
         }
-
     }
 
     protected fun internalSetPriority(priority: TodoItem.Priority) {
         when (priority) {
             TodoItem.Priority.LOW -> {
                 binding.changePriority.setText(R.string.low_priority)
-                binding.changePriority.setTextColor(ContextCompat.getColor(requireContext(), R.color.label_light_tertiary))
+                binding.changePriority.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.label_light_tertiary)
+                )
             }
 
             TodoItem.Priority.NORMAL -> {
                 binding.changePriority.setText(R.string.normal_priority)
-                binding.changePriority.setTextColor(ContextCompat.getColor(requireContext(), R.color.label_light_tertiary))
+                binding.changePriority.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.label_light_tertiary)
+                )
             }
 
             TodoItem.Priority.HIGH -> {
@@ -66,7 +69,7 @@ abstract class SoloTodoFragment : Fragment(R.layout.fragmet_add_todo) {
             }
         }
     }
-    companion object{
+    companion object {
         const val DATE_YEAR_OFFSET = 1900
     }
 }

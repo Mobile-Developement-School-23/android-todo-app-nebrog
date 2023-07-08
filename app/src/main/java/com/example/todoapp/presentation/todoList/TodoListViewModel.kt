@@ -102,9 +102,9 @@ class TodoListViewModel @Inject constructor(private val repository: TodoReposito
 
     private fun observeForOnline() {
         viewModelScope.launch {
-            //.drop - пропустить первое значение, так как инициализирующее значение MutableStateFlow<Boolean>(true), при пересоздании фрагмента
+            // .drop - пропустить первое значение, так как инициализирующее значение MutableStateFlow<Boolean>(true), при пересоздании фрагмента
             // вьюмодель получает состояние isConnected еще раз (MutableSharedFlow не фильтрует одиковые значений), поэтому использую MutableStateFlow
-            //.debounce - нужен при переключении с Wi-Fi на 4G, потому что в этот момент connectivity быстро меняет свое значение несколько раз
+            // .debounce - нужен при переключении с Wi-Fi на 4G, потому что в этот момент connectivity быстро меняет свое значение несколько раз
             isOnline.drop(1).debounce(ONLINE_DEBOUNCE_TIME).collect { isOnline ->
                 if (isOnline) {
                     onRetryClick()
@@ -117,7 +117,6 @@ class TodoListViewModel @Inject constructor(private val repository: TodoReposito
             }
         }
     }
-
 
     sealed interface State {
         data class Success(

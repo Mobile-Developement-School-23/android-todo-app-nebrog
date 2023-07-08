@@ -94,13 +94,11 @@ class AddTodoFragment : SoloTodoFragment() {
             }
             popupMenu.show()
         }
-
     }
 
     private fun showLoadingState() {
         binding.progressAddEdit.visibility = View.VISIBLE
     }
-
 
     private fun showSuccessState(state: Success) {
         binding.progressAddEdit.visibility = View.GONE
@@ -114,7 +112,10 @@ class AddTodoFragment : SoloTodoFragment() {
             context,
             { _, mYear, mMonth, mDay ->
                 viewModel.onDeadlineChanged(Date(mYear - DATE_YEAR_OFFSET, mMonth, mDay))
-            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)
+            },
+            c.get(Calendar.YEAR),
+            c.get(Calendar.MONTH),
+            c.get(Calendar.DAY_OF_MONTH)
         )
         datePickerDialog.setButton(
             DialogInterface.BUTTON_NEGATIVE,
@@ -126,9 +127,7 @@ class AddTodoFragment : SoloTodoFragment() {
     }
 
     private fun showErrorState(state: Actions.Error, view: View) {
-        Snackbar.make(
-            view, state.messageID,
-            Snackbar.LENGTH_LONG
-        ).setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
+        Snackbar.make(view, state.messageID, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
     }
 }

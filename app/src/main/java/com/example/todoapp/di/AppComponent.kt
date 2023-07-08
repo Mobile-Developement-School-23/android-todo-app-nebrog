@@ -19,12 +19,7 @@ import dagger.Component
 @AppScope
 @MyWorkerScope
 @RepositoryScope
-@Component(modules = [
-    DataModule::class,
-    DatabaseModule::class,
-    NetworkModule::class,
-    ViewModelModule::class,
-])
+@Component(modules = [DataModule::class, DatabaseModule::class, NetworkModule::class, ViewModelModule::class])
 interface AppComponent {
 
     fun inject(app: App)

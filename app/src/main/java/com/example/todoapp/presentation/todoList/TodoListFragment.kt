@@ -53,8 +53,6 @@ class TodoListFragment : Fragment(), Callback {
         val appComponent = (requireContext().applicationContext as App).appComponent
         fragmentComponent = appComponent.getTodoFragmentComponentFactory().create(this)
         fragmentComponent.inject(this)
-
-
         _binding = FragmetTodolistBinding.inflate(inflater, container, false)
         NetworkChangeListener.register(requireContext(), networkListener)
         return binding.root
@@ -112,10 +110,8 @@ class TodoListFragment : Fragment(), Callback {
     }
 
     private fun showErrorAction(state: Actions.Error, view: View) {
-        Snackbar.make(
-            view, state.messageID,
-            Snackbar.LENGTH_LONG
-        ).setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
+        Snackbar.make(view, state.messageID, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
     }
 
     private fun showLoadingState() {

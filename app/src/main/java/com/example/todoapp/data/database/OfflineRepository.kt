@@ -17,7 +17,7 @@ import javax.inject.Inject
  * Класс в котором описаны методы для работы с локальной базой данных.
  */
 @RepositoryScope
-class OfflineRepository @Inject constructor(private val todoItemDao: TodoItemDao): TodoRepository {
+class OfflineRepository @Inject constructor(private val todoItemDao: TodoItemDao) : TodoRepository {
 
     override suspend fun addTodo(item: TodoItem): Result<Unit> {
         return databaseCall {
@@ -36,7 +36,6 @@ class OfflineRepository @Inject constructor(private val todoItemDao: TodoItemDao
         return databaseCall {
             val todo = convertToEntity(item)
             todoItemDao.updateTodo(todo)
-
         }
     }
 
@@ -44,7 +43,6 @@ class OfflineRepository @Inject constructor(private val todoItemDao: TodoItemDao
         return databaseCall {
             val result = todoItemDao.getTodo(id)
             return@databaseCall convertFromEntity(result)
-
         }
     }
 

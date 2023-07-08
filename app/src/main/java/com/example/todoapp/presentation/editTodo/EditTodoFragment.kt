@@ -113,10 +113,8 @@ class EditTodoFragment : SoloTodoFragment() {
     }
 
     private fun showErrorAction(state: Actions.Error, view: View) {
-        Snackbar.make(
-            view, state.messageID,
-            Snackbar.LENGTH_LONG
-        ).setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
+        Snackbar.make(view, state.messageID, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
     }
 
     private fun showSuccessState(state: Success) {
@@ -136,7 +134,10 @@ class EditTodoFragment : SoloTodoFragment() {
             context,
             { _, mYear, mMonth, mDay ->
                 viewModel.onDeadlineChanged(Date(mYear - DATE_YEAR_OFFSET, mMonth, mDay))
-            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)
+            },
+            c.get(Calendar.YEAR),
+            c.get(Calendar.MONTH),
+            c.get(Calendar.DAY_OF_MONTH)
         )
         datePickerDialog.setButton(
             DialogInterface.BUTTON_NEGATIVE,

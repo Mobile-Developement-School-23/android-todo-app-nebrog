@@ -14,7 +14,6 @@ class MyWorker(
     private val repository: TodoRepository,
 ) : CoroutineWorker(appContext, workerParams) {
 
-
     override suspend fun doWork(): Result {
         val result = repository.getAllTodos()
         return when (result) {
