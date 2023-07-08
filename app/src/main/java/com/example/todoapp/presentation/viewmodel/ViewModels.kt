@@ -17,6 +17,9 @@ typealias ViewModelsMap = Map<Class<out ViewModel>, @JvmSuppressWildcards Provid
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ViewModelKey(val value: KClass<out ViewModel>)
 
+/**
+ * Класс который достает провайдеры вьюмоделей из апп скоупа и делает на их основе фабрику.
+ */
 @MainThread
 @Suppress("UNCHECKED_CAST")
 inline fun <reified VM : ViewModel> Fragment.vladViewModels(): Lazy<VM> {

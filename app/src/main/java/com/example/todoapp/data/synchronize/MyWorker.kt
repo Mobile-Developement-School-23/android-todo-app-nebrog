@@ -5,7 +5,10 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.todoapp.domain.TodoRepository
 
-class MyWorker constructor(
+/**
+ * Класс подтягивает свежие изменения раз в 8 часов.
+ */
+class MyWorker(
     appContext: Context,
     workerParams: WorkerParameters,
     private val repository: TodoRepository,

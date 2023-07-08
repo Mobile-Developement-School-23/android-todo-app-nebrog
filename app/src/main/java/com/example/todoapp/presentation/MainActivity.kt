@@ -3,7 +3,9 @@ package com.example.todoapp.presentation
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.todoapp.R
-
+/**
+ * Single Activity приложения
+ */
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -8,6 +8,9 @@ import com.example.todoapp.domain.TodoRepository
 import javax.inject.Inject
 import javax.inject.Provider
 
+/**
+ * Фабрика для предоставления кастомных зависимостей
+ */
 @MyWorkerScope
 class MyWorkerFactory @Inject constructor(
     private val repository: Provider<TodoRepository>,

@@ -15,6 +15,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+/**
+ * Модуль с зависимостями для работы с кэшом
+ */
 @Module
 interface DataModule {
 

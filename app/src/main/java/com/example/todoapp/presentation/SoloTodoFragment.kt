@@ -13,11 +13,14 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Прячет бойлерплейт для работы с экранами добавления/изменения
+ */
 abstract class SoloTodoFragment : Fragment(R.layout.fragmet_add_todo) {
 
     private var _binding: FragmetAddTodoBinding? = null
     protected val binding get() = _binding!!
-
+        
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -62,5 +65,8 @@ abstract class SoloTodoFragment : Fragment(R.layout.fragmet_add_todo) {
                 binding.changePriority.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_dark_red))
             }
         }
+    }
+    companion object{
+        const val DATE_YEAR_OFFSET = 1900
     }
 }

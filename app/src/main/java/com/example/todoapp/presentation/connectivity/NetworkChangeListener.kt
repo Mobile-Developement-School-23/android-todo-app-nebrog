@@ -5,6 +5,9 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 
+/**
+ * Класс ответсвенный предоставление информации о подключению к сети интернет
+ */
 class NetworkChangeListener(
     private val onConnectionChanged: (isConnected: Boolean) -> Unit
 ) : ConnectivityManager.NetworkCallback() {

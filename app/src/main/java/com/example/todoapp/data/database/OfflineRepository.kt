@@ -13,6 +13,9 @@ import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * Класс в котором описаны методы для работы с локальной базой данных.
+ */
 @RepositoryScope
 class OfflineRepository @Inject constructor(private val todoItemDao: TodoItemDao): TodoRepository {
 

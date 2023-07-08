@@ -15,6 +15,9 @@ import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * ViewModel UI класса EditTodoFragment. Связывает слои Presentation и Domain.
+ */
 class EditTodoViewModel @Inject constructor(private val repository: TodoRepository) : ViewModel() {
 
     private val mutableStates = MutableStateFlow<State>(State.Loading)

@@ -20,6 +20,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * Класс, который решает, в зависимости от ответа сети,
+ * в какой репозиторий обращаться
+ */
 @RepositoryScope
 class CacheRepository @Inject constructor(
     @RemoteRevision private val remoteRevision: RevisionHolder,

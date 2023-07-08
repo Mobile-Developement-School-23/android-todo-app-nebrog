@@ -7,6 +7,9 @@ import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Интерфейс для работы с базой данных.
+ */
 @Dao
 interface TodoItemDao {
 

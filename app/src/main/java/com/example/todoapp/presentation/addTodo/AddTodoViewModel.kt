@@ -18,6 +18,9 @@ import java.util.Date
 import java.util.UUID
 import javax.inject.Inject
 
+/**
+ * ViewModel UI класса AddTodoFragment. Связывает слои Presentation и Domain.
+ */
 class AddTodoViewModel @Inject constructor(private val repository: TodoRepository) : ViewModel() {
 
     private val mutableStates: MutableStateFlow<State> = MutableStateFlow(State.Success(generateEmptyTodo()))

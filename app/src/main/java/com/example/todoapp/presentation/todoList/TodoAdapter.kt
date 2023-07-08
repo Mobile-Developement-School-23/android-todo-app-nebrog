@@ -22,6 +22,9 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import javax.inject.Inject
 
+/**
+ * Класс, который отвечает за создание, управление и переиспользование ViewHolder'ов.
+ */
 @TodoListFragmentScope
 class TodoAdapter @Inject constructor(private val callback: Callback) : RecyclerView.Adapter<TodoViewHolder>() {
 

@@ -13,6 +13,9 @@ import com.example.todoapp.presentation.viewmodel.ViewModelsMap
 import dagger.BindsInstance
 import dagger.Component
 
+/**
+ * Главный скоуп приложения
+ */
 @AppScope
 @MyWorkerScope
 @RepositoryScope

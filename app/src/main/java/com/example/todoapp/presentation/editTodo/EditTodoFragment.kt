@@ -24,6 +24,9 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import java.util.Date
 
+/**
+ * UI класс, который отвечает за редактирование элемента в списке.
+ */
 class EditTodoFragment : SoloTodoFragment() {
 
     lateinit var fragmentComponent: EditTodoFragmentComponent
@@ -132,7 +135,7 @@ class EditTodoFragment : SoloTodoFragment() {
         val datePickerDialog = DatePickerDialog(
             context,
             { _, mYear, mMonth, mDay ->
-                viewModel.onDeadlineChanged(Date(mYear - 1900, mMonth, mDay))
+                viewModel.onDeadlineChanged(Date(mYear - DATE_YEAR_OFFSET, mMonth, mDay))
             }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)
         )
         datePickerDialog.setButton(

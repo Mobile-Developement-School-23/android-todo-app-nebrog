@@ -5,6 +5,9 @@ import com.example.todoapp.data.di.LimitedDispatcher
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 
+/**
+ * Класс, который персистентно хранит ревизию
+ */
 class RevisionHolder(
     private val key: String,
     private val preferences: SharedPreferences,

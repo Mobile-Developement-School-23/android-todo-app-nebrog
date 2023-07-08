@@ -9,6 +9,9 @@ import java.util.Calendar
 import java.util.UUID
 import kotlin.random.Random
 
+/**
+ * Класс без реальных запросов, предоставляющий уже готовые данные
+ */
 object StubTodoRepository : TodoRepository {
 
     private val random = Random(System.currentTimeMillis())

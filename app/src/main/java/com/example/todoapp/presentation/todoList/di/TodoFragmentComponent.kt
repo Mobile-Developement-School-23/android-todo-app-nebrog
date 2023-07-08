@@ -6,6 +6,9 @@ import com.example.todoapp.presentation.todoList.TodoListFragment
 import dagger.BindsInstance
 import dagger.Subcomponent
 
+/**
+ * Скоуп для экрана со списком элементов
+ */
 @Subcomponent
 @TodoListFragmentScope
 interface TodoFragmentComponent {

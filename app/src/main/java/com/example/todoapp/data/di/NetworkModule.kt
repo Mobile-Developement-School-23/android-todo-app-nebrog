@@ -11,6 +11,9 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+/**
+ * Модуль с зависимостями для работы с сетью
+ */
 @Module
 interface NetworkModule {
 

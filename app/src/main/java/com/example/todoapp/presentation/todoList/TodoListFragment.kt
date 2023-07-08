@@ -25,7 +25,9 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+/**
+ * UI класс, который отвечает за отображение списка элементов.
+ */
 class TodoListFragment : Fragment(), Callback {
 
     lateinit var fragmentComponent: TodoFragmentComponent

@@ -5,6 +5,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.todoapp.domain.TodoItem.Priority
 
+/**
+ * Класс, представляющий собой модель данных для хранения элементов.
+ * Нужен для работы в библиотеке Room.
+ * (По сути представляет таблицу)
+ */
 @Entity(tableName = "todos")
 class EntityTodoItem(
     @PrimaryKey(autoGenerate = false) @ColumnInfo(name = "item_id") val itemID: String,

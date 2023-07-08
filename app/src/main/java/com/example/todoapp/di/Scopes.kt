@@ -2,6 +2,10 @@ package com.example.todoapp.di
 
 import javax.inject.Scope
 
+/**
+ * Файлы с кастомными скоупами
+ */
+
 @Scope
 annotation class AppScope
 

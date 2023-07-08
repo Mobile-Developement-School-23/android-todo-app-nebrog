@@ -14,7 +14,9 @@ import com.example.todoapp.di.DaggerAppComponent
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-
+/**
+ * Приложение TodoApp by Vladislav Gorbenko =)
+ */
 class App : Application(), Configuration.Provider {
 
     lateinit var appComponent: AppComponent
@@ -38,9 +40,10 @@ class App : Application(), Configuration.Provider {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED)
             .build()
-        val workRequest = PeriodicWorkRequestBuilder<MyWorker>(
-            repeatInterval = 8, TimeUnit.HOURS
-        ).setConstraints(constraints).setInitialDelay(DURATION, TimeUnit.HOURS).build()
+        val workRequest = PeriodicWorkRequestBuilder<MyWorker>(DURATION, TimeUnit.HOURS)
+            .setConstraints(constraints)
+            .setInitialDelay(DURATION, TimeUnit.HOURS)
+            .build()
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             WORKNAME,
             ExistingPeriodicWorkPolicy.UPDATE,

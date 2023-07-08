@@ -8,6 +8,9 @@ import com.example.todoapp.di.AppScope
 import dagger.Module
 import dagger.Provides
 
+/**
+ * Модуль с зависимостями для работы с локальной базой данных
+ */
 @Module
 interface DatabaseModule {
 

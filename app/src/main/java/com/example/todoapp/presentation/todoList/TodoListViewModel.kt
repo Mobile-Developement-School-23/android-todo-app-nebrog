@@ -20,6 +20,9 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel UI класса TodoListFragment. Связывает слои Presentation и Domain.
+ */
 class TodoListViewModel @Inject constructor(private val repository: TodoRepository) : ViewModel() {
 
     private val mutableStates: MutableStateFlow<State> = MutableStateFlow(State.Loading)

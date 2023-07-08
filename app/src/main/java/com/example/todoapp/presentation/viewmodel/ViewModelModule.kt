@@ -8,6 +8,10 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
+/**
+ * Интерфейс, который собирает Viewmodel экранов в общуюю мапу.
+ * Живет в AppScope
+ */
 @Module
 interface ViewModelModule {
 

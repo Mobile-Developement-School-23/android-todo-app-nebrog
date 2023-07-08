@@ -18,6 +18,9 @@ import java.io.IOException
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * Класс отвечает за работу с сетью.
+ */
 @RepositoryScope
 class NetworkRepository @Inject constructor(
     @RemoteRevision private val revision: RevisionHolder,
