@@ -23,4 +23,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone" />
+
+
+    <FrameLayout
+        android:id="@+id/network_error"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:visibility="visible"
+        android:layout_gravity="bottom"
+        android:background="@color/color_light_blue">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="18sp"
+            android:text="@string/no_internet_error"
+            android:textColor="@color/back_light_primary"
+           />
+    </FrameLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

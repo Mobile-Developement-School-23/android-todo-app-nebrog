@@ -2,6 +2,9 @@ package com.example.todoapp.domain
 
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Интерфейя для работы с источниками данных
+ */
 interface TodoRepository {
     suspend fun addTodo(item: TodoItem): Result<Unit>
     suspend fun deleteTodo(id: String): Result<Unit>

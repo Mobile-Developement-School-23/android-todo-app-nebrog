@@ -2,6 +2,9 @@ package com.example.todoapp.domain
 
 import java.util.Date
 
+/**
+ * Класс базовой модели данных
+ */
 data class TodoItem(
     val itemID: String,
     val itemText: String,

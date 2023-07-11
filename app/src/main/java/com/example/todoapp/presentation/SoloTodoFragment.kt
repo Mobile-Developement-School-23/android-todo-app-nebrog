@@ -13,11 +13,13 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * Прячет бойлерплейт для работы с экранами добавления/изменения
+ */
 abstract class SoloTodoFragment : Fragment(R.layout.fragmet_add_todo) {
 
     private var _binding: FragmetAddTodoBinding? = null
     protected val binding get() = _binding!!
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,6 +29,7 @@ abstract class SoloTodoFragment : Fragment(R.layout.fragmet_add_todo) {
         _binding = FragmetAddTodoBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -42,19 +45,22 @@ abstract class SoloTodoFragment : Fragment(R.layout.fragmet_add_todo) {
             binding.deadlineDate.text = mDate
             binding.switchButton.isChecked = true
         }
-
     }
 
     protected fun internalSetPriority(priority: TodoItem.Priority) {
         when (priority) {
             TodoItem.Priority.LOW -> {
                 binding.changePriority.setText(R.string.low_priority)
-                binding.changePriority.setTextColor(ContextCompat.getColor(requireContext(), R.color.label_light_tertiary))
+                binding.changePriority.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.label_light_tertiary)
+                )
             }
 
             TodoItem.Priority.NORMAL -> {
                 binding.changePriority.setText(R.string.normal_priority)
-                binding.changePriority.setTextColor(ContextCompat.getColor(requireContext(), R.color.label_light_tertiary))
+                binding.changePriority.setTextColor(
+                    ContextCompat.getColor(requireContext(), R.color.label_light_tertiary)
+                )
             }
 
             TodoItem.Priority.HIGH -> {
@@ -62,5 +68,8 @@ abstract class SoloTodoFragment : Fragment(R.layout.fragmet_add_todo) {
                 binding.changePriority.setTextColor(ContextCompat.getColor(requireContext(), R.color.color_dark_red))
             }
         }
+    }
+    companion object {
+        const val DATE_YEAR_OFFSET = 1900
     }
 }

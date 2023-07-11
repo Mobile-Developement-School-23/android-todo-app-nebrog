@@ -4,23 +4,28 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todoapp.R
-import com.example.todoapp.data.network.NetworkRepository
 import com.example.todoapp.domain.TodoItem
+import com.example.todoapp.domain.TodoRepository
 import com.example.todoapp.domain.TodoRepository.Result.Failure
 import com.example.todoapp.domain.TodoRepository.Result.Success
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
+import javax.inject.Inject
 
-class EditTodoViewModel : ViewModel() {
+/**
+ * ViewModel UI класса EditTodoFragment. Связывает слои Presentation и Domain.
+ */
+class EditTodoViewModel @Inject constructor(private val repository: TodoRepository) : ViewModel() {
 
-    private val repository = NetworkRepository
     private val mutableStates = MutableStateFlow<State>(State.Loading)
     private val mutableActions = MutableSharedFlow<Actions>(replay = 0)
-    val states: MutableStateFlow<State> = mutableStates
-    val actions: MutableSharedFlow<Actions> = mutableActions
+    val states: StateFlow<State> = mutableStates
+    val actions: SharedFlow<Actions> = mutableActions
 
     fun init(todoId: String) {
         viewModelScope.launch {

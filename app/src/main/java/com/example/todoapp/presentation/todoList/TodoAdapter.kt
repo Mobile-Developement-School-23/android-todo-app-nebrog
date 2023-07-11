@@ -16,12 +16,17 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.todoapp.R
+import com.example.todoapp.di.TodoListFragmentScope
 import com.example.todoapp.domain.TodoItem
 import java.text.SimpleDateFormat
 import java.util.Locale
+import javax.inject.Inject
 
-
-class TodoAdapter(private val callback: Callback) : RecyclerView.Adapter<TodoViewHolder>() {
+/**
+ * Класс, который отвечает за создание, управление и переиспользование ViewHolder'ов.
+ */
+@TodoListFragmentScope
+class TodoAdapter @Inject constructor(private val callback: Callback) : RecyclerView.Adapter<TodoViewHolder>() {
 
     private var todoList = listOf<TodoItem>()
 
@@ -108,7 +113,6 @@ class TodoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 }
 
-
 interface Callback {
     fun onClickCheckBox(id: String, isDone: Boolean)
     fun onClickText(id: String)
@@ -118,6 +122,7 @@ class TodoDiffCallback(
     private val oldList: List<TodoItem>,
     private val newList: List<TodoItem>
 ) : DiffUtil.Callback() {
+
     override fun getOldListSize(): Int = oldList.size
 
     override fun getNewListSize(): Int = newList.size

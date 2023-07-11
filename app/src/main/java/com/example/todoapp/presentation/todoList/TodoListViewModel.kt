@@ -4,13 +4,14 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.todoapp.R
-import com.example.todoapp.data.network.NetworkRepository
 import com.example.todoapp.domain.TodoItem
+import com.example.todoapp.domain.TodoRepository
 import com.example.todoapp.domain.TodoRepository.Result.Failure
 import com.example.todoapp.domain.TodoRepository.Result.Success
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -18,17 +19,20 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class TodoListViewModel : ViewModel() {
+/**
+ * ViewModel UI класса TodoListFragment. Связывает слои Presentation и Domain.
+ */
+class TodoListViewModel @Inject constructor(private val repository: TodoRepository) : ViewModel() {
 
-    private val repository = NetworkRepository
     private val mutableStates: MutableStateFlow<State> = MutableStateFlow(State.Loading)
     private val mutableActions = MutableSharedFlow<Actions>(replay = 0)
     private val isHidden: MutableStateFlow<Boolean> = MutableStateFlow(true)
     private val isOnline = MutableStateFlow<Boolean>(true)
     private var collectJob: Job? = null
 
-    val actions: MutableSharedFlow<Actions> = mutableActions
+    val actions: SharedFlow<Actions> = mutableActions
     val states: StateFlow<State> = mutableStates
 
     init {
@@ -74,14 +78,14 @@ class TodoListViewModel : ViewModel() {
         collectJob = viewModelScope.launch {
             val result = repository.getAllTodos()
             when (result) {
-                is Failure -> mutableStates.value = State.NoNetwork
+                is Failure -> mutableStates.value = State.Error
                 is Success -> emitSuccessState(result.value, isHidden.value)
             }
 
             repository.observeTodos().combine(isHidden) { todos, isHidden ->
                 emitSuccessState(todos, isHidden)
             }.catch {
-                mutableStates.value = State.NoNetwork
+                mutableStates.value = State.Error
             }.collect()
         }
     }
@@ -93,38 +97,40 @@ class TodoListViewModel : ViewModel() {
         } else {
             todos
         }
-        val success = State.Success(items, isHidden, doneCount)
+        val success = State.Success(items, isHidden, doneCount, isOnline.value)
         mutableStates.value = success
     }
 
     private fun observeForOnline() {
         viewModelScope.launch {
-            //.drop - пропустить первое значение, так как инициализирующее значение MutableStateFlow<Boolean>(true), при пересоздании фрагмента
+            // .drop - пропустить первое значение, так как инициализирующее значение MutableStateFlow<Boolean>(true), при пересоздании фрагмента
             // вьюмодель получает состояние isConnected еще раз (MutableSharedFlow не фильтрует одиковые значений), поэтому использую MutableStateFlow
-            //.debounce - нужен при переключении с Wi-Fi на 4G, потому что в этот момент connectivity быстро меняет свое значение несколько раз
+            // .debounce - нужен при переключении с Wi-Fi на 4G, потому что в этот момент connectivity быстро меняет свое значение несколько раз
             isOnline.drop(1).debounce(ONLINE_DEBOUNCE_TIME).collect { isOnline ->
                 if (isOnline) {
                     onRetryClick()
                 } else {
-                    mutableStates.value = State.NoNetwork
+                    val lastSuccessState = mutableStates.value as? State.Success
+                    if (lastSuccessState != null) {
+                        mutableStates.value = lastSuccessState.copy(isOnline = false)
+                    }
                 }
             }
         }
     }
-
 
     sealed interface State {
         data class Success(
             val items: List<TodoItem>,
             val isHidden: Boolean,
             val doneCount: Int,
+            val isOnline: Boolean,
         ) : State
 
-        object NoNetwork : State
-
         object Loading : State
-    }
 
+        object Error : State
+    }
 
     sealed interface Actions {
 
