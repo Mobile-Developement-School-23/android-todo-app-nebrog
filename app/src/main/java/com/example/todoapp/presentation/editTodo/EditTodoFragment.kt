@@ -18,7 +18,6 @@ import com.example.todoapp.presentation.SoloTodoFragment
 import com.example.todoapp.presentation.editTodo.EditTodoViewModel.Actions
 import com.example.todoapp.presentation.editTodo.EditTodoViewModel.State.Loading
 import com.example.todoapp.presentation.editTodo.EditTodoViewModel.State.Success
-import com.example.todoapp.presentation.editTodo.di.EditTodoFragmentComponent
 import com.example.todoapp.presentation.viewmodel.vladViewModels
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -29,15 +28,12 @@ import java.util.Date
  */
 class EditTodoFragment : SoloTodoFragment() {
 
-    lateinit var fragmentComponent: EditTodoFragmentComponent
-        private set
-
     private val viewModel by vladViewModels<EditTodoViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val appComponent = (requireContext().applicationContext as App).appComponent
-        fragmentComponent = appComponent.getEditTodoFragmentComponentFactory().create()
+        appComponent.getEditTodoFragmentComponentFactory().create()
         if (savedInstanceState == null) {
             val todoID = requireArguments().getString(ARGUMENT_KEY) as String
             viewModel.init(todoID)

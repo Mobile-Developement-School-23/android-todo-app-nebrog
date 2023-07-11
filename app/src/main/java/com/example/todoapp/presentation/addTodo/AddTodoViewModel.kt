@@ -8,9 +8,9 @@ import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository
 import com.example.todoapp.domain.TodoRepository.Result.Failure
 import com.example.todoapp.domain.TodoRepository.Result.Success
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
@@ -27,7 +27,7 @@ class AddTodoViewModel @Inject constructor(private val repository: TodoRepositor
     private val mutableActions = MutableSharedFlow<Actions>(replay = 0)
 
     val states: StateFlow<State> = mutableStates
-    val actions: Flow<Actions> = mutableActions
+    val actions: SharedFlow<Actions> = mutableActions
 
     fun onTodoSave(text: String) {
         val state: State.Success = getSuccessState() ?: return

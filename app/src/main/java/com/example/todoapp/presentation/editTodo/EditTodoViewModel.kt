@@ -10,6 +10,8 @@ import com.example.todoapp.domain.TodoRepository.Result.Failure
 import com.example.todoapp.domain.TodoRepository.Result.Success
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
@@ -22,8 +24,8 @@ class EditTodoViewModel @Inject constructor(private val repository: TodoReposito
 
     private val mutableStates = MutableStateFlow<State>(State.Loading)
     private val mutableActions = MutableSharedFlow<Actions>(replay = 0)
-    val states: MutableStateFlow<State> = mutableStates
-    val actions: MutableSharedFlow<Actions> = mutableActions
+    val states: StateFlow<State> = mutableStates
+    val actions: SharedFlow<Actions> = mutableActions
 
     fun init(todoId: String) {
         viewModelScope.launch {

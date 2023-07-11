@@ -11,6 +11,7 @@ import com.example.todoapp.domain.TodoRepository.Result.Success
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
@@ -31,7 +32,7 @@ class TodoListViewModel @Inject constructor(private val repository: TodoReposito
     private val isOnline = MutableStateFlow<Boolean>(true)
     private var collectJob: Job? = null
 
-    val actions: MutableSharedFlow<Actions> = mutableActions
+    val actions: SharedFlow<Actions> = mutableActions
     val states: StateFlow<State> = mutableStates
 
     init {

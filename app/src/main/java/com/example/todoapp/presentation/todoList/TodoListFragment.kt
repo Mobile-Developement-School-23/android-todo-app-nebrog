@@ -19,7 +19,6 @@ import com.example.todoapp.presentation.connectivity.NetworkChangeListener
 import com.example.todoapp.presentation.editTodo.EditTodoFragment
 import com.example.todoapp.presentation.todoList.TodoListViewModel.Actions
 import com.example.todoapp.presentation.todoList.TodoListViewModel.State
-import com.example.todoapp.presentation.todoList.di.TodoFragmentComponent
 import com.example.todoapp.presentation.viewmodel.vladViewModels
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -29,9 +28,6 @@ import javax.inject.Inject
  * UI класс, который отвечает за отображение списка элементов.
  */
 class TodoListFragment : Fragment(), Callback {
-
-    lateinit var fragmentComponent: TodoFragmentComponent
-        private set
 
     @Inject
     lateinit var todoAdapter: TodoAdapter
@@ -51,7 +47,7 @@ class TodoListFragment : Fragment(), Callback {
         savedInstanceState: Bundle?,
     ): View {
         val appComponent = (requireContext().applicationContext as App).appComponent
-        fragmentComponent = appComponent.getTodoFragmentComponentFactory().create(this)
+        val fragmentComponent = appComponent.getTodoFragmentComponentFactory().create(this)
         fragmentComponent.inject(this)
         _binding = FragmetTodolistBinding.inflate(inflater, container, false)
         NetworkChangeListener.register(requireContext(), networkListener)

@@ -18,7 +18,6 @@ import com.example.todoapp.presentation.SoloTodoFragment
 import com.example.todoapp.presentation.addTodo.AddTodoViewModel.Actions
 import com.example.todoapp.presentation.addTodo.AddTodoViewModel.State.Loading
 import com.example.todoapp.presentation.addTodo.AddTodoViewModel.State.Success
-import com.example.todoapp.presentation.addTodo.di.AddTodoFragmentComponent
 import com.example.todoapp.presentation.viewmodel.vladViewModels
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -29,15 +28,12 @@ import java.util.Date
  */
 class AddTodoFragment : SoloTodoFragment() {
 
-    lateinit var fragmentComponent: AddTodoFragmentComponent
-        private set
-
     private val viewModel by vladViewModels<AddTodoViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val appComponent = (requireContext().applicationContext as App).appComponent
-        fragmentComponent = appComponent.getAddTodoFragmentComponentFactory().create()
+        appComponent.getAddTodoFragmentComponentFactory().create()
         setUpCollects(view.context, view)
         setUpUI()
     }
