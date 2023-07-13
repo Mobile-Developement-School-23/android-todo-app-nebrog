@@ -80,7 +80,7 @@ class CacheRepository @Inject constructor(
                     localRevision.setRevision(remoteRevision.getRevision())
                 }
                 is Failure -> action(localRepository).onSuccess {
-                    Log.i("KekPek", "Не удалось выполнить операцию изменения на бекенде, сохраняем локально")
+                    Log.i("nebrog", "Не удалось выполнить операцию изменения на бекенде, сохраняем локально")
                     localRevision.setRevision(remoteRevision.getRevision() + 1)
                 }
             }
@@ -95,22 +95,22 @@ class CacheRepository @Inject constructor(
         val localRev = localRevision.getRevision()
         when {
             localRev > remoteRev -> {
-                Log.i("KekPek", "Локальный ревижн обгоняет бекенд ($localRev > $remoteRev), накатываем изменения на бекенд")
+                Log.i("nebrog", "Локальный ревижн обгоняет бекенд ($localRev > $remoteRev), накатываем изменения на бекенд")
                 val items = localRepository.getAllTodos().getOr { return }
                 remoteRepository.updateAllTodos(items)
-                    .onSuccess { Log.i("KekPek", "Бекенд успешно обновлён локальными изменениями") }
-                    .onFailure { Log.i("KekPek", "Не удалось обновить бекенд") }
+                    .onSuccess { Log.i("nebrog", "Бекенд успешно обновлён локальными изменениями") }
+                    .onFailure { Log.i("nebrog", "Не удалось обновить бекенд") }
             }
             localRev < remoteRev -> {
-                Log.i("KekPek", "Локальный ревижн менше бекенда ($localRev < $remoteRev), накатываем изменения на локальное хранилище")
+                Log.i("nebrog", "Локальный ревижн менше бекенда ($localRev < $remoteRev), накатываем изменения на локальное хранилище")
                 localRepository.updateAllTodos(lastRemoteTodos)
             }
             lastKnownRemoteRev < remoteRev -> {
-                Log.i("KekPek", "Пока приложение было оффлайн ревижн бекенда был изменён ($lastKnownRemoteRev -> $remoteRev), накатываем изменения на локальное хранилище")
+                Log.i("nebrog", "Пока приложение было оффлайн ревижн бекенда был изменён ($lastKnownRemoteRev -> $remoteRev), накатываем изменения на локальное хранилище")
                 localRepository.updateAllTodos(lastRemoteTodos)
             }
             else -> {
-                Log.i("KekPek", "Ревизии совпадают ($localRev = $remoteRev), действий не требуется")
+                Log.i("nebrog", "Ревизии совпадают ($localRev = $remoteRev), действий не требуется")
             }
         }
         localRevision.setRevision(remoteRevision.getRevision())
