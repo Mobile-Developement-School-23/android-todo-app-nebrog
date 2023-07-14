@@ -20,11 +20,15 @@ import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.todoapp.R
-import com.example.todoapp.presentation.SoloTodoFragment
 import com.example.todoapp.presentation.compose.DetailTodoItem
-import com.example.todoapp.presentation.editTodo.EditTodoViewModel.Actions.*
+import com.example.todoapp.presentation.compose.TodoTheme
+import com.example.todoapp.presentation.editTodo.EditTodoViewModel.Actions.CalendarPicker
+import com.example.todoapp.presentation.editTodo.EditTodoViewModel.Actions.Error
+import com.example.todoapp.presentation.editTodo.EditTodoViewModel.Actions.Exit
+import com.example.todoapp.presentation.editTodo.EditTodoViewModel.Actions.SetText
 import com.example.todoapp.presentation.editTodo.EditTodoViewModel.State.Loading
 import com.example.todoapp.presentation.editTodo.EditTodoViewModel.State.Success
 import com.example.todoapp.presentation.viewmodel.vladViewModels
@@ -36,7 +40,7 @@ import java.util.Date
 /**
  * UI класс, который отвечает за редактирование элемента в списке.
  */
-class EditTodoFragment : SoloTodoFragment() {
+class EditTodoFragment : Fragment() {
 
     private val viewModel by vladViewModels<EditTodoViewModel>()
 
@@ -51,19 +55,21 @@ class EditTodoFragment : SoloTodoFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val state = viewModel.states.collectAsStateWithLifecycle()
-                val value = state.value
-                when (value) {
-                    Loading -> LoadingState()
-                    is Success -> SuccessState(value)
-                }
-                LaunchedEffect(Unit) {
-                    viewModel.actions.collectLatest { action ->
-                        when (action) {
-                            Exit -> parentFragmentManager.popBackStackImmediate()
-                            CalendarPicker -> showCalendarPicker(context)
-                            is Error -> showErrorAction(action, this@apply)
-                            is SetText -> {}
+                TodoTheme {
+                    val state = viewModel.states.collectAsStateWithLifecycle()
+                    val value = state.value
+                    when (value) {
+                        Loading -> LoadingState()
+                        is Success -> SuccessState(value)
+                    }
+                    LaunchedEffect(Unit) {
+                        viewModel.actions.collectLatest { action ->
+                            when (action) {
+                                Exit -> parentFragmentManager.popBackStackImmediate()
+                                CalendarPicker -> showCalendarPicker(context)
+                                is Error -> showErrorAction(action, this@apply)
+                                is SetText -> {}
+                            }
                         }
                     }
                 }
@@ -93,7 +99,7 @@ class EditTodoFragment : SoloTodoFragment() {
                 modifier = Modifier
                     .height(120.dp)
                     .width(120.dp),
-                color = colorResource(id = R.color.color_light_blue),
+                color = colorResource(id = R.color.color_blue),
                 strokeWidth = 4.dp
             )
         }
@@ -101,7 +107,7 @@ class EditTodoFragment : SoloTodoFragment() {
 
     private fun showErrorAction(state: Error, view: View) {
         Snackbar.make(view, state.messageID, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
+            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_blue)).show()
     }
 
     private fun showCalendarPicker(context: Context) {
@@ -121,11 +127,15 @@ class EditTodoFragment : SoloTodoFragment() {
         ) { _, _ ->
             viewModel.onCalendarCancel()
         }
+        datePickerDialog.setOnCancelListener {
+            viewModel.onCalendarCancel()
+        }
         datePickerDialog.show()
     }
 
     companion object {
         private const val ARGUMENT_KEY = "TodoID"
+        const val DATE_YEAR_OFFSET = 1900
 
         fun createNewInstance(id: String): EditTodoFragment {
             val bundle = Bundle()
@@ -135,4 +145,5 @@ class EditTodoFragment : SoloTodoFragment() {
             return fragmentEdit
         }
     }
+
 }

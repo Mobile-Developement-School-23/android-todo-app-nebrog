@@ -15,11 +15,13 @@ import com.example.todoapp.App
 import com.example.todoapp.R
 import com.example.todoapp.databinding.FragmetTodolistBinding
 import com.example.todoapp.presentation.addTodo.AddTodoFragment
+import com.example.todoapp.presentation.changeTheme.ChangeThemeFragment
 import com.example.todoapp.presentation.connectivity.NetworkChangeListener
 import com.example.todoapp.presentation.editTodo.EditTodoFragment
 import com.example.todoapp.presentation.todoList.TodoListViewModel.Actions
 import com.example.todoapp.presentation.todoList.TodoListViewModel.State
 import com.example.todoapp.presentation.viewmodel.vladViewModels
+import com.example.todoapp.utils.addTodoAnimation
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -74,6 +76,7 @@ class TodoListFragment : Fragment(), Callback {
         val editTodo = EditTodoFragment.createNewInstance(id)
         parentFragmentManager
             .beginTransaction()
+            .addTodoAnimation()
             .replace(R.id.fragment_container_view, editTodo)
             .addToBackStack(null)
             .commit()
@@ -107,7 +110,7 @@ class TodoListFragment : Fragment(), Callback {
 
     private fun showErrorAction(state: Actions.Error, view: View) {
         Snackbar.make(view, state.messageID, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
+            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_blue)).show()
     }
 
     private fun showLoadingState() {
@@ -148,7 +151,16 @@ class TodoListFragment : Fragment(), Callback {
         binding.todolistLayout.addButton.setOnClickListener {
             parentFragmentManager
                 .beginTransaction()
+                .addTodoAnimation()
                 .replace(R.id.fragment_container_view, AddTodoFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+        binding.todolistLayout.toolbarSetting.setOnClickListener {
+            parentFragmentManager
+                .beginTransaction()
+                .addTodoAnimation()
+                .replace(R.id.fragment_container_view, ChangeThemeFragment())
                 .addToBackStack(null)
                 .commit()
         }

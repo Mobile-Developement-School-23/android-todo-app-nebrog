@@ -1,7 +1,7 @@
 package com.example.todoapp.data
 
 import android.util.Log
-import com.example.todoapp.data.database.OfflineRepository
+import com.example.todoapp.data.alarm.AlarmRepository
 import com.example.todoapp.data.di.LocalRevision
 import com.example.todoapp.data.di.RemoteRevision
 import com.example.todoapp.data.network.NetworkRepository
@@ -29,7 +29,7 @@ class CacheRepository @Inject constructor(
     @RemoteRevision private val remoteRevision: RevisionHolder,
     @LocalRevision private val localRevision: RevisionHolder,
     private val remoteRepository: NetworkRepository,
-    private val localRepository: OfflineRepository,
+    private val localRepository: AlarmRepository,
 ) : TodoRepository {
 
     override suspend fun addTodo(item: TodoItem): Result<Unit> {
@@ -95,18 +95,27 @@ class CacheRepository @Inject constructor(
         val localRev = localRevision.getRevision()
         when {
             localRev > remoteRev -> {
-                Log.i("nebrog", "Локальный ревижн обгоняет бекенд ($localRev > $remoteRev), накатываем изменения на бекенд")
+                Log.i(
+                    "nebrog",
+                    "Локальный ревижн обгоняет бекенд ($localRev > $remoteRev), накатываем изменения на бекенд"
+                )
                 val items = localRepository.getAllTodos().getOr { return }
                 remoteRepository.updateAllTodos(items)
                     .onSuccess { Log.i("nebrog", "Бекенд успешно обновлён локальными изменениями") }
                     .onFailure { Log.i("nebrog", "Не удалось обновить бекенд") }
             }
             localRev < remoteRev -> {
-                Log.i("nebrog", "Локальный ревижн менше бекенда ($localRev < $remoteRev), накатываем изменения на локальное хранилище")
+                Log.i(
+                    "nebrog",
+                    "Локальный ревижн менше бекенда ($localRev < $remoteRev), накатываем изменения на локальное хранилище"
+                )
                 localRepository.updateAllTodos(lastRemoteTodos)
             }
             lastKnownRemoteRev < remoteRev -> {
-                Log.i("nebrog", "Пока приложение было оффлайн ревижн бекенда был изменён ($lastKnownRemoteRev -> $remoteRev), накатываем изменения на локальное хранилище")
+                Log.i(
+                    "nebrog",
+                    "Пока приложение было оффлайн ревижн бекенда был изменён ($lastKnownRemoteRev -> $remoteRev), накатываем изменения на локальное хранилище"
+                )
                 localRepository.updateAllTodos(lastRemoteTodos)
             }
             else -> {

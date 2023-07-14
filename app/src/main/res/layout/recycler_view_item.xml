@@ -8,7 +8,7 @@
     android:paddingHorizontal="16dp"
     android:paddingVertical="12dp">
 
-    <CheckBox
+    <com.google.android.material.checkbox.MaterialCheckBox
         android:id="@+id/checkbox"
         android:layout_width="24dp"
         android:layout_height="24dp"
@@ -16,26 +16,24 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/todo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="12dp"
         android:ellipsize="end"
         android:maxLines="3"
-        android:textColor="@color/black"
         android:textSize="16sp"
         app:layout_constraintLeft_toRightOf="@+id/checkbox"
         app:layout_constraintRight_toLeftOf="@+id/info"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/lorem/random" />
 
-    <TextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/date_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:textColor="@color/label_light_tertiary"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="@+id/todo"
         app:layout_constraintTop_toBottomOf="@+id/todo"
@@ -51,7 +49,8 @@
         android:src="@drawable/info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="ContentDescription" />
+        tools:ignore="ContentDescription"
+        app:tint="@color/label_secondary" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,4 +4,4 @@
     android:name="com.example.todoapp.presentation.todoList.TodoListFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/back_light_primary" />
+    android:background="@color/back_primary" />

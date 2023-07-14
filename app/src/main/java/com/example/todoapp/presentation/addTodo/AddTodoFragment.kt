@@ -24,11 +24,11 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.todoapp.R
-import com.example.todoapp.presentation.SoloTodoFragment.Companion.DATE_YEAR_OFFSET
 import com.example.todoapp.presentation.addTodo.AddTodoViewModel.Actions
 import com.example.todoapp.presentation.addTodo.AddTodoViewModel.State.Loading
 import com.example.todoapp.presentation.addTodo.AddTodoViewModel.State.Success
 import com.example.todoapp.presentation.compose.DetailTodoItem
+import com.example.todoapp.presentation.compose.TodoTheme
 import com.example.todoapp.presentation.viewmodel.vladViewModels
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
@@ -45,18 +45,20 @@ class AddTodoFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
             setContent {
-                val state: State<AddTodoViewModel.State> = viewModel.states.collectAsStateWithLifecycle()
-                val value = state.value
-                when (value) {
-                    Loading -> LoadingState()
-                    is Success -> SuccessState(value)
-                }
-                LaunchedEffect(Unit) {
-                    viewModel.actions.collectLatest { action ->
-                        when (action) {
-                            Actions.Exit -> parentFragmentManager.popBackStackImmediate()
-                            Actions.CalendarPicker -> showCalendarPicker(context)
-                            is Actions.Error -> showErrorState(action, this@apply)
+                TodoTheme {
+                    val state: State<AddTodoViewModel.State> = viewModel.states.collectAsStateWithLifecycle()
+                    val value = state.value
+                    when (value) {
+                        Loading -> LoadingState()
+                        is Success -> SuccessState(value)
+                    }
+                    LaunchedEffect(Unit) {
+                        viewModel.actions.collectLatest { action ->
+                            when (action) {
+                                Actions.Exit -> parentFragmentManager.popBackStackImmediate()
+                                Actions.CalendarPicker -> showCalendarPicker(context)
+                                is Actions.Error -> showErrorState(action, this@apply)
+                            }
                         }
                     }
                 }
@@ -74,7 +76,7 @@ class AddTodoFragment : Fragment() {
             onPriorityChanged = viewModel::onPriorityChanged,
             onCheckChanged = viewModel::onCheckedChanged,
 
-        )
+            )
     }
 
     @Composable
@@ -87,7 +89,7 @@ class AddTodoFragment : Fragment() {
                 modifier = Modifier
                     .height(120.dp)
                     .width(120.dp),
-                color = colorResource(id = R.color.color_light_blue),
+                color = colorResource(id = R.color.color_blue),
                 strokeWidth = 4.dp
             )
         }
@@ -110,11 +112,18 @@ class AddTodoFragment : Fragment() {
         ) { _, _ ->
             viewModel.onCalendarCancel()
         }
+        datePickerDialog.setOnCancelListener {
+            viewModel.onCalendarCancel()
+        }
         datePickerDialog.show()
     }
 
     private fun showErrorState(state: Actions.Error, view: View) {
         Snackbar.make(view, state.messageID, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
+            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_blue)).show()
+    }
+
+    companion object {
+        const val DATE_YEAR_OFFSET = 1900
     }
 }

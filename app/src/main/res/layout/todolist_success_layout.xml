@@ -10,7 +10,7 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/back_light_primary"
+        android:background="@color/back_primary"
         android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -34,16 +34,38 @@
                 android:layout_height="?actionBarSize"
                 app:layout_collapseMode="pin" />
 
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/toolbar_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom"
-                android:layout_marginEnd="24dp"
-                android:layout_marginBottom="20dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/visible" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/toolbar_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/settings"
+                    android:tint="?attr/colorOnSurface"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/toolbar_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="14dp"
+                    android:layout_marginBottom="20dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:src="@drawable/visible"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/toolbar_setting" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/toolbar_subtitle"
@@ -54,7 +76,7 @@
                 android:layout_marginTop="6dp"
                 android:layout_marginBottom="20dp"
                 android:text="@string/toolbar_subtitle"
-                android:textColor="@color/label_light_tertiary"
+                android:textColor="@color/label_tertiary"
                 android:textSize="16sp"
                 app:layout_collapseMode="parallax" />
 
@@ -62,7 +84,7 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="8dp"
@@ -76,7 +98,7 @@
             tools:itemCount="100"
             tools:listitem="@layout/recycler_view_item" />
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_button"
@@ -85,26 +107,24 @@
         android:layout_gravity="end|bottom"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="32dp"
-        android:background="@drawable/oval"
-        android:backgroundTint="@color/color_light_blue"
+        android:contentDescription="TODO"
         android:src="@drawable/add"
         android:visibility="gone"
-        app:shapeAppearance="@drawable/oval"
-        app:shapeAppearanceOverlay="@drawable/oval"
-        app:tint="@color/white" />
+        app:shapeAppearance="@drawable/oval" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
-        android:visibility="visible"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/label_light_tertiary">
-        <TextView
+        android:backgroundTint="@color/label_tertiary"
+        android:visibility="visible">
+
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:backgroundTint="@color/label_light_tertiary"/>
+            android:backgroundTint="@color/label_tertiary" />
     </FrameLayout>
-
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
