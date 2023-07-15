@@ -12,11 +12,11 @@
         android:layout_width="240dp"
         android:layout_height="240dp"
         android:tint="?attr/colorPrimary"
-        android:src="@drawable/network_error" />
+        android:src="@drawable/info" />
 
     <com.google.android.material.textview.MaterialTextView
         style="@style/MaterialAlertDialog.Material3.Body.Text"
-        android:text="Мне нужны твои пермишены, чтобы напоминать о дедлайнах вовремя."
+        android:text="@string/request_permissions"
         android:layout_width="wrap_content"
         android:gravity="center"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
         android:layout_margin="6dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Выдать пермишены" />
+        android:text="@string/reject_permissions" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/permission_button_reject"
@@ -36,6 +36,6 @@
         style="@style/Widget.Material3.Button.OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Продолжить без уведомлений" />
+        android:text="@string/without_notification" />
 
 </androidx.appcompat.widget.LinearLayoutCompat>

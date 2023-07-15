@@ -25,4 +25,7 @@
     <string name="notification_low_priority">Важность: Низкая</string>
     <string name="notification_normal_priority">Важность: Обычная</string>
     <string name="notification_high_priority">Важность: Высокая</string>
+    <string name="reject_permissions">Выдать разрешение</string>
+    <string name="without_notification">Продолжить без уведомлений</string>
+    <string name="request_permissions">Для оповещения о делайнах, необходимо выдать разрешение.</string>
 </resources>

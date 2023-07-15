@@ -6,12 +6,17 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.fragment.app.Fragment
 import com.example.todoapp.R
+import com.example.todoapp.databinding.FragmentPermissionsLayoutBinding
+import com.example.todoapp.databinding.FragmetTodolistBinding
+import com.example.todoapp.presentation.connectivity.NetworkChangeListener
 import com.example.todoapp.utils.checkPermissions
 
 class PermissionsFragment : Fragment(R.layout.fragment_permissions_layout) {
@@ -20,11 +25,8 @@ class PermissionsFragment : Fragment(R.layout.fragment_permissions_layout) {
     private val requestSystemSettings = registerForSystemSettingsResult()
     private val requiredPermissions by lazy { readPermissionsFromArguments() }
     private val sharedPreferences by lazy { createSharedPreferences() }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        setUpClickListeners()
-    }
+    private var _binding: FragmentPermissionsLayoutBinding? = null
+    private val binding get() = _binding!!
 
     override fun onStart() {
         super.onStart()
@@ -34,11 +36,23 @@ class PermissionsFragment : Fragment(R.layout.fragment_permissions_layout) {
         }
     }
 
-    private fun setUpClickListeners() {
-        val requestButton = requireView().findViewById<View>(R.id.permission_button_request)
-        val rejectButton = requireView().findViewById<View>(R.id.permission_button_reject)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        _binding = FragmentPermissionsLayoutBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        requestButton.setOnClickListener {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpClickListeners()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    private fun setUpClickListeners() {
+        binding.permissionButtonRequest.setOnClickListener {
             // 1.       pref=false, shouldShowRequestPermissionRationale() = false
             // 2.       pref=true, shouldShowRequestPermissionRationale() = true
             // 3,4,5... pref=true, shouldShowRequestPermissionRationale() = false
@@ -52,7 +66,8 @@ class PermissionsFragment : Fragment(R.layout.fragment_permissions_layout) {
             }
             sharedPreferences.edit().putBoolean(SHARED_PREF_KEY, true).apply()
         }
-        rejectButton.setOnClickListener {
+
+        binding.permissionButtonReject.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
     }
