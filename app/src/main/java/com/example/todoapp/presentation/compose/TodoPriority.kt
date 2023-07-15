@@ -2,6 +2,7 @@
 
 package com.example.todoapp.presentation.compose
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -33,6 +34,7 @@ import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.todoapp.R
@@ -40,7 +42,7 @@ import com.example.todoapp.domain.TodoItem
 import kotlinx.coroutines.launch
 
 @Composable
-fun ColumnScope.TodoPriority(
+fun TodoPriority(
     priority: TodoItem.Priority,
     onPriorityChanged: (TodoItem.Priority) -> Unit,
 ) {
@@ -53,6 +55,22 @@ fun ColumnScope.TodoPriority(
     Divider(
         modifier = Modifier.padding(top = 16.dp)
     )
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+fun PreviewTodoPriorityLight() {
+    TodoTheme {
+        TodoPriority(TodoItem.Priority.HIGH,{})
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewTodoPriorityDark() {
+    TodoTheme {
+        TodoPriority(TodoItem.Priority.HIGH,{})
+    }
 }
 
 @Composable
@@ -103,6 +121,22 @@ private fun PriorityDropDown(
         if (newPriority == TodoItem.Priority.HIGH) {
             isAnimated.value = true
         }
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+fun PreviewPriorityDropDownLight() {
+    TodoTheme {
+        PriorityDropDown(TodoItem.Priority.LOW,{})
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewPriorityDropDownDark() {
+    TodoTheme {
+        PriorityDropDown(TodoItem.Priority.NORMAL,{})
     }
 }
 

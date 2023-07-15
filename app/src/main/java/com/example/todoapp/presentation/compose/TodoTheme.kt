@@ -12,13 +12,13 @@ import com.google.accompanist.themeadapter.material3.Mdc3Theme
 fun TodoTheme(content: @Composable () -> Unit) {
     Mdc3Theme {
         CompositionLocalProvider(
-            LocalRippleTheme provides RippleVladTheme,
+            LocalRippleTheme provides RippleTodoTheme,
             content = content
         )
     }
 }
 
-object RippleVladTheme : RippleTheme {
+object RippleTodoTheme : RippleTheme {
     @Composable
     override fun defaultColor() = MaterialTheme.colorScheme.primary
 
