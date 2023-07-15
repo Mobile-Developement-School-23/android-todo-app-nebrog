@@ -23,3 +23,6 @@ annotation class AddTodoFragmentScope
 
 @Scope
 annotation class EditTodoFragmentScope
+
+@Scope
+annotation class MainActivityScope

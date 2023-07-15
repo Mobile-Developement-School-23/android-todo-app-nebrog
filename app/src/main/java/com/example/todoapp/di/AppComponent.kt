@@ -5,8 +5,7 @@ import com.example.todoapp.App
 import com.example.todoapp.data.di.DataModule
 import com.example.todoapp.data.di.DatabaseModule
 import com.example.todoapp.data.di.NetworkModule
-import com.example.todoapp.presentation.addTodo.di.AddTodoFragmentComponent
-import com.example.todoapp.presentation.editTodo.di.EditTodoFragmentComponent
+import com.example.todoapp.presentation.di.MainActivityComponent
 import com.example.todoapp.presentation.todoList.di.TodoFragmentComponent
 import com.example.todoapp.presentation.viewmodel.ViewModelModule
 import com.example.todoapp.presentation.viewmodel.ViewModelsMap
@@ -28,9 +27,7 @@ interface AppComponent {
 
     fun getTodoFragmentComponentFactory(): TodoFragmentComponent.Factory
 
-    fun getEditTodoFragmentComponentFactory(): EditTodoFragmentComponent.Factory
-
-    fun getAddTodoFragmentComponentFactory(): AddTodoFragmentComponent.Factory
+    fun getMainActivityComponentFactory(): MainActivityComponent.Factory
 
     @Component.Factory
     interface Factory {

@@ -10,6 +10,7 @@ import com.example.todoapp.data.alarm.AlarmIntentUtils.createAlarmIntent
 import com.example.todoapp.data.alarm.AlarmIntentUtils.createEditIntent
 import com.example.todoapp.domain.DeadlineManager
 import com.example.todoapp.domain.TodoItem
+import com.example.todoapp.utils.checkPermissions
 import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
@@ -21,22 +22,34 @@ class AlarmDeadlineManager @Inject constructor(
     private val alarmManager = requireNotNull(context.getSystemService<AlarmManager>())
 
     override fun setAlarm(todoItem: TodoItem) {
+        // Проверка, что дедлайн вообще нужен
         val deadline = todoItem.deadline
         if (deadline == null) {
             cancelAlarm(todoItem.itemID)
             return
         }
+
+        // Проверка, что пермишены есть
+        val isGranted = context.checkPermissions(getRequiredPermissions())
+        if (!isGranted) {
+            return
+        }
+
+        // Проверка, что дедлайн ещё не просрочен
         val triggerDate = getTriggerDate(deadline)
         if (triggerDate <= Calendar.getInstance().timeInMillis) {
-            // Дедлайн уже прошел, нечего планировать
             return
         }
 
         val alarmIntent = createAlarmIntent(context, todoItem.itemID, todoItem)
         val editIntent = createEditIntent(context, todoItem.itemID)
 
-        AlarmManagerCompat.setAlarmClock(alarmManager, triggerDate, editIntent, alarmIntent)
-        Log.i("nebrog", "Заметка ${todoItem.itemID} успешно запланирована.")
+        try {
+            AlarmManagerCompat.setAlarmClock(alarmManager, triggerDate, editIntent, alarmIntent)
+            Log.i("nebrog", "Заметка ${todoItem.itemID} успешно запланирована.")
+        } catch (e: SecurityException) {
+            Log.e("nebrog", "Пользователь не выдал пермишены", e)
+        }
     }
 
     override fun cancelAlarm(itemId: String) {
@@ -62,10 +75,6 @@ class AlarmDeadlineManager @Inject constructor(
         return when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> listOf(
                 android.Manifest.permission.POST_NOTIFICATIONS,
-                android.Manifest.permission.SCHEDULE_EXACT_ALARM,
-            )
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> listOf(
-                android.Manifest.permission.SCHEDULE_EXACT_ALARM,
             )
             else -> emptyList()
         }
