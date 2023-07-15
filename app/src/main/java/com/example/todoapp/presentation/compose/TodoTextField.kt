@@ -12,11 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.todoapp.R
 
 @Composable
@@ -28,7 +26,7 @@ fun TodoTextField(text: TextFieldValue, onTextChanged: (TextFieldValue) -> Unit)
             .defaultMinSize(minHeight = 120.dp)
             .fillMaxWidth(),
         onValueChange = onTextChanged,
-        textStyle = TextStyle(fontSize = 16.sp),
+        textStyle = MaterialTheme.typography.bodyLarge,
         shape = MaterialTheme.shapes.small,
         placeholder = {
             Text(

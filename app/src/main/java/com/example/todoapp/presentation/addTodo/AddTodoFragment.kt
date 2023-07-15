@@ -7,20 +7,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.todoapp.R
@@ -28,6 +18,7 @@ import com.example.todoapp.presentation.addTodo.AddTodoViewModel.Actions
 import com.example.todoapp.presentation.addTodo.AddTodoViewModel.State.Loading
 import com.example.todoapp.presentation.addTodo.AddTodoViewModel.State.Success
 import com.example.todoapp.presentation.compose.DetailTodoItem
+import com.example.todoapp.presentation.compose.LoadingState
 import com.example.todoapp.presentation.compose.TodoTheme
 import com.example.todoapp.presentation.viewmodel.vladViewModels
 import com.google.android.material.snackbar.Snackbar
@@ -79,22 +70,6 @@ class AddTodoFragment : Fragment() {
             )
     }
 
-    @Composable
-    private fun LoadingState() {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.fillMaxSize()
-        ) {
-            CircularProgressIndicator(
-                modifier = Modifier
-                    .height(120.dp)
-                    .width(120.dp),
-                color = colorResource(id = R.color.color_blue),
-                strokeWidth = 4.dp
-            )
-        }
-    }
-
     private fun showCalendarPicker(context: Context) {
         val c = Calendar.getInstance()
         val datePickerDialog = DatePickerDialog(
@@ -119,8 +94,7 @@ class AddTodoFragment : Fragment() {
     }
 
     private fun showErrorState(state: Actions.Error, view: View) {
-        Snackbar.make(view, state.messageID, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_blue)).show()
+        Snackbar.make(view, state.messageID, Snackbar.LENGTH_LONG).show()
     }
 
     companion object {

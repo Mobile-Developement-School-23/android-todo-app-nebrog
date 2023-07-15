@@ -47,7 +47,6 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:src="@drawable/settings"
-                    android:tint="?attr/colorOnSurface"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent" />
@@ -77,7 +76,7 @@
                 android:layout_marginBottom="20dp"
                 android:text="@string/toolbar_subtitle"
                 android:textColor="@color/label_tertiary"
-                android:textSize="16sp"
+                style="@style/TextAppearance.Material3.BodyLarge"
                 app:layout_collapseMode="parallax" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>

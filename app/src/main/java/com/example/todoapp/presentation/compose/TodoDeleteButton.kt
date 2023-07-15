@@ -1,5 +1,6 @@
 package com.example.todoapp.presentation.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -13,10 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.todoapp.R
 
 @Composable
@@ -25,7 +25,10 @@ fun TodoDeleteButton(onDeleteClick: (() -> Unit)?) {
         enabled = onDeleteClick != null,
         contentPadding = PaddingValues(0.dp),
         onClick = { onDeleteClick?.invoke() },
-        colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent, disabledContainerColor = Color.Transparent),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Transparent,
+            disabledContainerColor = Color.Transparent
+        ),
     ) {
         val deleteColor = if (onDeleteClick != null) {
             MaterialTheme.colorScheme.error
@@ -42,7 +45,27 @@ fun TodoDeleteButton(onDeleteClick: (() -> Unit)?) {
         Text(
             stringResource(id = R.string.delete),
             color = deleteColor,
-            fontSize = 16.sp
+            style = MaterialTheme.typography.bodyLarge
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+fun PreviewTodoDeleteButtonLight() {
+    TodoTheme {
+        TodoDeleteButton(
+            onDeleteClick = null,
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewTodoDeleteButtonDark() {
+    TodoTheme {
+        TodoDeleteButton(
+            onDeleteClick = {},
         )
     }
 }

@@ -1,7 +1,6 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.example.todoapp.presentation.compose
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -80,15 +78,32 @@ private fun TodoContent(
     }
 }
 
-@Preview
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_NO)
 @Composable
-fun PreviewDetailTodoItem() {
-    DetailTodoItem(
-        todo = getRandomTodo(),
-        onSaveClick = {},
-        onCloseClick = {},
-        onDeleteClick = null,
-        onPriorityChanged = {},
-        onCheckChanged = {}
-    )
+fun PreviewDetailTodoItemLight() {
+    TodoTheme {
+        DetailTodoItem(
+            todo = getRandomTodo(),
+            onSaveClick = {},
+            onCloseClick = {},
+            onDeleteClick = null,
+            onPriorityChanged = {},
+            onCheckChanged = {}
+        )
+    }
+}
+
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun PreviewDetailTodoItemDark() {
+    TodoTheme {
+        DetailTodoItem(
+            todo = getRandomTodo(),
+            onSaveClick = {},
+            onCloseClick = {},
+            onDeleteClick = {},
+            onPriorityChanged = {},
+            onCheckChanged = {}
+        )
+    }
 }
