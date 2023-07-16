@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.example.todoapp.R
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.utils.getRandomTodo
+import java.util.Date
 
 @Composable
 fun DetailTodoItem(
@@ -29,7 +30,7 @@ fun DetailTodoItem(
     onCloseClick: () -> Unit,
     onDeleteClick: (() -> Unit)?,
     onPriorityChanged: (TodoItem.Priority) -> Unit,
-    onCheckChanged: (Boolean) -> Unit,
+    onDeadlineChanged: (Date?) -> Unit,
 ) {
     val text = rememberSaveable(saver = textFieldValueSaver()) {
         mutableStateOf(TextFieldValue(todo.itemText))
@@ -48,7 +49,7 @@ fun DetailTodoItem(
                 padding = it,
                 onDeleteClick = onDeleteClick,
                 onPriorityChanged = onPriorityChanged,
-                onCheckChanged = onCheckChanged,
+                onDeadlineChanged = onDeadlineChanged,
             )
         }
     )
@@ -61,7 +62,7 @@ private fun TodoContent(
     padding: PaddingValues,
     onDeleteClick: (() -> Unit)?,
     onPriorityChanged: (TodoItem.Priority) -> Unit,
-    onCheckChanged: (Boolean) -> Unit,
+    onDeadlineChanged: (Date?) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -73,7 +74,7 @@ private fun TodoContent(
     ) {
         TodoTextField(text.value, onTextChanged = { text.value = it })
         TodoPriority(todo.itemPriority, onPriorityChanged)
-        TodoDeadline(todo.deadline, onCheckChanged)
+        TodoDeadline(todo.deadline, onDeadlineChanged)
         TodoDeleteButton(onDeleteClick)
     }
 }
@@ -88,7 +89,7 @@ fun PreviewDetailTodoItemLight() {
             onCloseClick = {},
             onDeleteClick = null,
             onPriorityChanged = {},
-            onCheckChanged = {}
+            onDeadlineChanged = {}
         )
     }
 }
@@ -103,7 +104,7 @@ fun PreviewDetailTodoItemDark() {
             onCloseClick = {},
             onDeleteClick = {},
             onPriorityChanged = {},
-            onCheckChanged = {}
+            onDeadlineChanged = {}
         )
     }
 }

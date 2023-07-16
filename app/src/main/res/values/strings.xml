@@ -9,6 +9,7 @@
     <string name="normal_priority">Нет</string>
     <string name="high_priority">!!Высокая</string>
     <string name="delete">Удалить</string>
+    <string name="ok">ОК</string>
     <string name="cancel">Отмена</string>
     <string name="toolbar_subtitle">Выполнено — %1$d</string>
     <string name="title">Мои дела</string>
@@ -28,4 +29,10 @@
     <string name="reject_permissions">Выдать разрешение</string>
     <string name="without_notification">Продолжить без уведомлений</string>
     <string name="request_permissions">Для оповещения о делайнах, необходимо выдать разрешение.</string>
+    <string name="notification_deadline_postpone_button">Отложить</string>
+    <string name="notification_deadline_postpone_title">Перенос дедлайна</string>
+    <string name="notification_deadline_postpone_text">Переносим задачу на сутки вперёд. Новое уведомление придёт ровно через 24 часа.</string>
+    <string name="notification_deadline_postpone_error_title">Не удалось перенести дедлайн</string>
+    <string name="notification_deadline_postpone_error_text">Нажмите на уведомление, чтобы попробовать ещё раз</string>
+    <string name="notification_deadline_channel_name">Дедлайны задач</string>
 </resources>

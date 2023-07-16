@@ -2,6 +2,7 @@ package com.example.todoapp.di
 
 import android.content.Context
 import com.example.todoapp.App
+import com.example.todoapp.data.alarm.di.AlarmServiceComponent
 import com.example.todoapp.data.di.DataModule
 import com.example.todoapp.data.di.DatabaseModule
 import com.example.todoapp.data.di.NetworkModule
@@ -28,6 +29,8 @@ interface AppComponent {
     fun getTodoFragmentComponentFactory(): TodoFragmentComponent.Factory
 
     fun getMainActivityComponentFactory(): MainActivityComponent.Factory
+
+    fun getAlarmServiceComponentFactory(): AlarmServiceComponent.Factory
 
     @Component.Factory
     interface Factory {

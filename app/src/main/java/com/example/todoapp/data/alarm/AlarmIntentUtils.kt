@@ -33,12 +33,10 @@ object AlarmIntentUtils {
     /**
      * Создает интент, который вызовет сервис, который должен поднять нотификашу.
      */
-    fun createAlarmIntent(context: Context, itemId: String, item: TodoItem? = null): PendingIntent {
+    fun createAlarmIntent(context: Context, itemId: String, item: TodoItem): PendingIntent {
         val serviceIntent = Intent(context, DeadlineNotificationService::class.java)
         serviceIntent.putItemId(itemId)
-        if (item != null) {
-            serviceIntent.putItemInformation(item)
-        }
+        serviceIntent.putItemInformation(item)
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             PendingIntentCompat.getForegroundService(
                 context,
@@ -59,6 +57,29 @@ object AlarmIntentUtils {
     }
 
     /**
+     * Создает "пустой" интент, который используется для удаления предыдущего
+     */
+    fun deleteAlarmIntent(context: Context, itemId: String): PendingIntent? {
+        val serviceIntent = Intent(context, DeadlineNotificationService::class.java)
+        serviceIntent.putItemId(itemId)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PendingIntent.getForegroundService(
+                context,
+                itemId.hashCode(),
+                serviceIntent,
+                PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
+            )
+        } else {
+            PendingIntent.getService(
+                context,
+                itemId.hashCode(),
+                serviceIntent,
+                PendingIntent.FLAG_NO_CREATE or PendingIntent.FLAG_IMMUTABLE,
+            )
+        }
+    }
+
+    /**
      * Создает интент, который вызовет активити, которая должна открыть экран редактирования нужной тудухи.
      */
     fun createEditIntent(context: Context, itemId: String): PendingIntent {
@@ -72,6 +93,31 @@ object AlarmIntentUtils {
             PendingIntent.FLAG_UPDATE_CURRENT,
             false
         )
+    }
+
+    /**
+     * Создает интент, который вызовет сервис, который отложит дедлайн на сутки.
+     */
+    fun createPostponeIntent(context: Context, itemId: String): PendingIntent {
+        val postponeIntent = DeadlinePostponeService.createPostponeIntent(context)
+        postponeIntent.putItemId(itemId)
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            PendingIntentCompat.getForegroundService(
+                context,
+                itemId.hashCode(),
+                postponeIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT,
+                false
+            )
+        } else {
+            PendingIntentCompat.getService(
+                context,
+                itemId.hashCode(),
+                postponeIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT,
+                false
+            )
+        }
     }
 
     private fun Intent.putItemId(itemId: String): Intent {

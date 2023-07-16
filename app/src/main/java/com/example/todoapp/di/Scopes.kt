@@ -26,3 +26,6 @@ annotation class EditTodoFragmentScope
 
 @Scope
 annotation class MainActivityScope
+
+@Scope
+annotation class AlarmServiceScope

@@ -15,8 +15,6 @@ import androidx.activity.result.contract.ActivityResultContracts.StartActivityFo
 import androidx.fragment.app.Fragment
 import com.example.todoapp.R
 import com.example.todoapp.databinding.FragmentPermissionsLayoutBinding
-import com.example.todoapp.databinding.FragmetTodolistBinding
-import com.example.todoapp.presentation.connectivity.NetworkChangeListener
 import com.example.todoapp.utils.checkPermissions
 
 class PermissionsFragment : Fragment(R.layout.fragment_permissions_layout) {
@@ -36,7 +34,7 @@ class PermissionsFragment : Fragment(R.layout.fragment_permissions_layout) {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPermissionsLayoutBinding.inflate(inflater, container, false)
         return binding.root
     }

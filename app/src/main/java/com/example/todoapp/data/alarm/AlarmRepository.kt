@@ -1,7 +1,7 @@
 package com.example.todoapp.data.alarm
 
 import com.example.todoapp.data.database.OfflineRepository
-import com.example.todoapp.di.AppScope
+import com.example.todoapp.di.RepositoryScope
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.domain.TodoRepository
 import com.example.todoapp.utils.getOr
@@ -9,7 +9,7 @@ import com.example.todoapp.utils.onFailure
 import com.example.todoapp.utils.onSuccess
 import javax.inject.Inject
 
-@AppScope
+@RepositoryScope
 class AlarmRepository @Inject constructor(
     private val alarmDeadlineManager: AlarmDeadlineManager,
     private val repository: OfflineRepository,

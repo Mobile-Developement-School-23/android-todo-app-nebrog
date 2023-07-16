@@ -8,6 +8,7 @@ import androidx.core.app.AlarmManagerCompat
 import androidx.core.content.getSystemService
 import com.example.todoapp.data.alarm.AlarmIntentUtils.createAlarmIntent
 import com.example.todoapp.data.alarm.AlarmIntentUtils.createEditIntent
+import com.example.todoapp.data.alarm.AlarmIntentUtils.deleteAlarmIntent
 import com.example.todoapp.domain.DeadlineManager
 import com.example.todoapp.domain.TodoItem
 import com.example.todoapp.utils.checkPermissions
@@ -24,7 +25,7 @@ class AlarmDeadlineManager @Inject constructor(
     override fun setAlarm(todoItem: TodoItem) {
         // Проверка, что дедлайн вообще нужен
         val deadline = todoItem.deadline
-        if (deadline == null) {
+        if (deadline == null || todoItem.doneFlag) {
             cancelAlarm(todoItem.itemID)
             return
         }
@@ -46,25 +47,25 @@ class AlarmDeadlineManager @Inject constructor(
 
         try {
             AlarmManagerCompat.setAlarmClock(alarmManager, triggerDate, editIntent, alarmIntent)
-            Log.i("nebrog", "Заметка ${todoItem.itemID} успешно запланирована.")
+            Log.i("nebrog", "Заметка ${todoItem.itemID} успешно запланирована на [$deadline].")
         } catch (e: SecurityException) {
             Log.e("nebrog", "Пользователь не выдал пермишены", e)
         }
     }
 
     override fun cancelAlarm(itemId: String) {
-        val alarmIntent = createAlarmIntent(context, itemId)
-        alarmManager.cancel(alarmIntent)
-        Log.i("nebrog", "Заметка $itemId успешно отменена.")
+        val alarmIntent = deleteAlarmIntent(context, itemId)
+        if (alarmIntent != null) {
+            alarmManager.cancel(alarmIntent)
+            Log.i("nebrog", "Заметка $itemId успешно отменена.")
+        }
     }
 
     private fun getTriggerDate(deadline: Date): Long {
         val triggerCalendar = Calendar.getInstance().apply {
             // Выставляем желаемую дату
             time = deadline
-            // Переводим часы на 00:00
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
+            // Переводим часы на HH:MM:00.000
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
         }

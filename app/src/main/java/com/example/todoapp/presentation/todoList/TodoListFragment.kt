@@ -1,5 +1,6 @@
 package com.example.todoapp.presentation.todoList
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,14 +43,18 @@ class TodoListFragment : Fragment(), Callback {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val appComponent = (requireContext().applicationContext as App).appComponent
+        val fragmentComponent = appComponent.getTodoFragmentComponentFactory().create(this)
+        fragmentComponent.inject(this)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val appComponent = (requireContext().applicationContext as App).appComponent
-        val fragmentComponent = appComponent.getTodoFragmentComponentFactory().create(this)
-        fragmentComponent.inject(this)
         _binding = FragmetTodolistBinding.inflate(inflater, container, false)
         NetworkChangeListener.register(requireContext(), networkListener)
         return binding.root

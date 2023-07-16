@@ -52,7 +52,7 @@ class TodoAdapter @Inject constructor(private val callback: Callback) : Recycler
         val item = todoList[position]
         holder.onBind(item)
         holder.checkBox.setOnClickListener { callback.onClickCheckBox(item.itemID, !item.doneFlag) }
-        holder.textTodo.setOnClickListener { callback.onClickText(item.itemID) }
+        holder.itemView.setOnClickListener { callback.onClickText(item.itemID) }
     }
 
     override fun getItemCount(): Int {
