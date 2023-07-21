@@ -5,8 +5,10 @@ package com.example.todoapp.data.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.todoapp.data.CacheRepository
+import com.example.todoapp.data.alarm.AlarmDeadlineManager
 import com.example.todoapp.data.synchronize.RevisionHolder
 import com.example.todoapp.di.AppScope
+import com.example.todoapp.domain.DeadlineManager
 import com.example.todoapp.domain.TodoRepository
 import dagger.Binds
 import dagger.Module
@@ -23,6 +25,9 @@ interface DataModule {
 
     @Binds
     fun bindRepository(instance: CacheRepository): TodoRepository
+
+    @Binds
+    fun bindDeadlineManager(instance: AlarmDeadlineManager): DeadlineManager
 
     companion object {
         @Provides

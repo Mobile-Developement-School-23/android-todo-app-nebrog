@@ -1,10 +1,10 @@
 package com.example.todoapp.presentation.todoList
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -15,11 +15,13 @@ import com.example.todoapp.App
 import com.example.todoapp.R
 import com.example.todoapp.databinding.FragmetTodolistBinding
 import com.example.todoapp.presentation.addTodo.AddTodoFragment
+import com.example.todoapp.presentation.changeTheme.ChangeThemeFragment
 import com.example.todoapp.presentation.connectivity.NetworkChangeListener
 import com.example.todoapp.presentation.editTodo.EditTodoFragment
 import com.example.todoapp.presentation.todoList.TodoListViewModel.Actions
 import com.example.todoapp.presentation.todoList.TodoListViewModel.State
 import com.example.todoapp.presentation.viewmodel.vladViewModels
+import com.example.todoapp.utils.addTodoAnimation
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -41,14 +43,18 @@ class TodoListFragment : Fragment(), Callback {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val appComponent = (requireContext().applicationContext as App).appComponent
+        val fragmentComponent = appComponent.getTodoFragmentComponentFactory().create(this)
+        fragmentComponent.inject(this)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        val appComponent = (requireContext().applicationContext as App).appComponent
-        val fragmentComponent = appComponent.getTodoFragmentComponentFactory().create(this)
-        fragmentComponent.inject(this)
         _binding = FragmetTodolistBinding.inflate(inflater, container, false)
         NetworkChangeListener.register(requireContext(), networkListener)
         return binding.root
@@ -74,6 +80,7 @@ class TodoListFragment : Fragment(), Callback {
         val editTodo = EditTodoFragment.createNewInstance(id)
         parentFragmentManager
             .beginTransaction()
+            .addTodoAnimation()
             .replace(R.id.fragment_container_view, editTodo)
             .addToBackStack(null)
             .commit()
@@ -106,8 +113,7 @@ class TodoListFragment : Fragment(), Callback {
     }
 
     private fun showErrorAction(state: Actions.Error, view: View) {
-        Snackbar.make(view, state.messageID, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.color_light_blue)).show()
+        Snackbar.make(view, state.messageID, Snackbar.LENGTH_LONG).show()
     }
 
     private fun showLoadingState() {
@@ -148,7 +154,16 @@ class TodoListFragment : Fragment(), Callback {
         binding.todolistLayout.addButton.setOnClickListener {
             parentFragmentManager
                 .beginTransaction()
+                .addTodoAnimation()
                 .replace(R.id.fragment_container_view, AddTodoFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+        binding.todolistLayout.toolbarSetting.setOnClickListener {
+            parentFragmentManager
+                .beginTransaction()
+                .addTodoAnimation()
+                .replace(R.id.fragment_container_view, ChangeThemeFragment())
                 .addToBackStack(null)
                 .commit()
         }

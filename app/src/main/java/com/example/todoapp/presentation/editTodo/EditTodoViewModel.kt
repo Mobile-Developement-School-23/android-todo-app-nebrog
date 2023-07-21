@@ -38,7 +38,6 @@ class EditTodoViewModel @Inject constructor(private val repository: TodoReposito
                 }
 
                 is Success -> {
-                    mutableActions.emit(Actions.SetText(result.value.itemText))
                     mutableStates.value = State.Success(result.value)
                 }
             }
@@ -79,7 +78,7 @@ class EditTodoViewModel @Inject constructor(private val repository: TodoReposito
         }
     }
 
-    fun onDeadlineChanged(date: Date) {
+    fun onDeadlineChanged(date: Date?) {
         val state: State.Success = getSuccessState() ?: return
         val updatedItem = state.item.copy(deadline = date)
         mutableStates.value = State.Success(updatedItem)
@@ -89,28 +88,6 @@ class EditTodoViewModel @Inject constructor(private val repository: TodoReposito
         val state: State.Success = getSuccessState() ?: return
         val updatedItem = state.item.copy(itemPriority = priority)
         mutableStates.value = State.Success(updatedItem)
-    }
-
-    fun onCheckedChanged(isChecked: Boolean) {
-        val state: State.Success = getSuccessState() ?: return
-        if (!isChecked) {
-            val updatedItem = state.item.copy(deadline = null)
-            mutableStates.value = State.Success(updatedItem)
-        } else {
-            val updatedItem = state.item.copy(deadline = Calendar.getInstance().time)
-            mutableStates.value = State.Success(updatedItem)
-            viewModelScope.launch { mutableActions.emit(Actions.CalendarPicker) }
-        }
-    }
-
-    fun onCalendarCancel() {
-        val state: State.Success = getSuccessState() ?: return
-        val updatedItem = state.item.copy(deadline = null)
-        mutableStates.value = State.Success(updatedItem)
-    }
-
-    fun onDeadlineClick() {
-        viewModelScope.launch { mutableActions.emit(Actions.CalendarPicker) }
     }
 
     private fun getSuccessState(): State.Success? {
@@ -125,10 +102,6 @@ class EditTodoViewModel @Inject constructor(private val repository: TodoReposito
 
     sealed interface Actions {
         object Exit : Actions
-
-        object CalendarPicker : Actions
-
-        class SetText(val text: String) : Actions
 
         class Error(@StringRes val messageID: Int) : Actions
     }

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingDefaultResource">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        android:tint="?attr/colorPrimary"
+        android:src="@drawable/info" />
+
+    <com.google.android.material.textview.MaterialTextView
+        style="@style/MaterialAlertDialog.Material3.Body.Text"
+        android:text="@string/request_permissions"
+        android:layout_width="wrap_content"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/permission_button_request"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_margin="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/reject_permissions" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/permission_button_reject"
+        android:layout_margin="6dp"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/without_notification" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

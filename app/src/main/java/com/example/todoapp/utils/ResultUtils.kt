@@ -1,27 +1,35 @@
 package com.example.todoapp.utils
 
 import com.example.todoapp.domain.TodoRepository
+import com.example.todoapp.domain.TodoRepository.Result
 
 /**
  * Утильные методы для работы с [TodoRepository.Result]
  */
-inline fun <R> TodoRepository.Result<R>.onSuccess(action: (R) -> Unit): TodoRepository.Result<R> {
-    if (this is TodoRepository.Result.Success) {
+inline fun <R> Result<R>.onSuccess(action: (R) -> Unit): Result<R> {
+    if (this is Result.Success) {
         action(value)
     }
     return this
 }
 
-inline fun <R> TodoRepository.Result<R>.onFailure(action: () -> Unit): TodoRepository.Result<R> {
-    if (this is TodoRepository.Result.Failure) {
-        action()
+inline fun <R> Result<R>.onFailure(action: (Result.Failure) -> Unit): Result<R> {
+    if (this is Result.Failure) {
+        action(this)
     }
     return this
 }
 
-inline fun <R> TodoRepository.Result<R>.getOr(fallback: (TodoRepository.Result.Failure) -> R): R {
+inline fun <R> Result<R>.getOr(fallback: (Result.Failure) -> R): R {
     return when (this) {
-        is TodoRepository.Result.Failure -> fallback(this)
-        is TodoRepository.Result.Success -> value
+        is Result.Failure -> fallback(this)
+        is Result.Success -> value
+    }
+}
+
+fun <R, T> Result<R>.map(transform: (R) -> T): Result<T> {
+    return when (this) {
+        is Result.Failure -> this
+        is Result.Success -> Result.Success(transform(this.value))
     }
 }

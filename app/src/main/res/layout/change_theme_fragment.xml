@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="6dp">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/dark_theme_button"
+        style="@style/TextAppearance.Material3.BodyLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginVertical="6dp"
+        android:backgroundTint="@android:color/white"
+        android:drawableLeft="@drawable/night_theme"
+        android:drawableTint="@color/color_red"
+        android:textColor="@color/color_red"
+        android:text="@string/dark_theme" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/light_theme_button"
+        style="@style/TextAppearance.Material3.BodyLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginVertical="6dp"
+        android:backgroundTint="@android:color/white"
+        android:drawableLeft="@drawable/light_theme"
+        android:text="@string/light_theme"
+        android:drawableTint="@color/color_blue"
+        android:textColor="@color/color_blue" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/system_theme_button"
+        style="@style/TextAppearance.Material3.BodyLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:backgroundTint="@android:color/white"
+        android:layout_marginVertical="6dp"
+        android:drawableLeft="@drawable/settings"
+        android:textColor="@color/black"
+        android:text="@string/system_theme" />
+
+</LinearLayout>
+
+
+
+

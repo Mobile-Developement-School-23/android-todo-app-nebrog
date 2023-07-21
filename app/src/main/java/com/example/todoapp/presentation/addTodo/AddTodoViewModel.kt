@@ -46,7 +46,7 @@ class AddTodoViewModel @Inject constructor(private val repository: TodoRepositor
         }
     }
 
-    fun onDeadlineChanged(date: Date) {
+    fun onDeadlineChanged(date: Date?) {
         val state: State.Success = getSuccessState() ?: return
         val updatedItem = state.item.copy(deadline = date)
         mutableStates.value = State.Success(updatedItem)
@@ -56,30 +56,6 @@ class AddTodoViewModel @Inject constructor(private val repository: TodoRepositor
         val state: State.Success = getSuccessState() ?: return
         val updatedItem = state.item.copy(itemPriority = priority)
         mutableStates.value = State.Success(updatedItem)
-    }
-
-    fun onCheckedChanged(isChecked: Boolean) {
-        val state: State.Success = getSuccessState() ?: return
-        if (!isChecked) {
-            val updatedItem = state.item.copy(deadline = null)
-            mutableStates.value = State.Success(updatedItem)
-        } else {
-            val updatedItem = state.item.copy(deadline = Calendar.getInstance().time)
-            mutableStates.value = State.Success(updatedItem)
-            viewModelScope.launch { mutableActions.emit(Actions.CalendarPicker) }
-        }
-    }
-
-    fun onCalendarCancel() {
-        val state: State.Success = getSuccessState() ?: return
-        val updatedItem = state.item.copy(deadline = null)
-        mutableStates.value = State.Success(updatedItem)
-    }
-
-    fun onDeadlineClick() {
-        viewModelScope.launch {
-            mutableActions.emit(Actions.CalendarPicker)
-        }
     }
 
     private fun getSuccessState(): State.Success? {
@@ -106,8 +82,6 @@ class AddTodoViewModel @Inject constructor(private val repository: TodoRepositor
 
     sealed interface Actions {
         object Exit : Actions
-
-        object CalendarPicker : Actions
 
         class Error(@StringRes val messageID: Int) : Actions
     }

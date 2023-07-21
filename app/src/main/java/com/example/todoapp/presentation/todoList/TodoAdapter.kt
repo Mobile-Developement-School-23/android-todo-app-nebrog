@@ -52,7 +52,7 @@ class TodoAdapter @Inject constructor(private val callback: Callback) : Recycler
         val item = todoList[position]
         holder.onBind(item)
         holder.checkBox.setOnClickListener { callback.onClickCheckBox(item.itemID, !item.doneFlag) }
-        holder.textTodo.setOnClickListener { callback.onClickText(item.itemID) }
+        holder.itemView.setOnClickListener { callback.onClickText(item.itemID) }
     }
 
     override fun getItemCount(): Int {
@@ -92,9 +92,9 @@ class TodoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             }
         }
         if (todoItem.doneFlag) {
-            textTodo.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_light_tertiary))
+            textTodo.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_tertiary))
         } else {
-            textTodo.setTextColor(ContextCompat.getColor(itemView.context, R.color.black))
+            textTodo.setTextColor(ContextCompat.getColor(itemView.context, R.color.label_primary))
         }
         if (todoItem.deadline == null) {
             date.isVisible = false
@@ -105,9 +105,9 @@ class TodoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             date.isVisible = true
         }
         val checkBoxColor = when {
-            todoItem.doneFlag -> R.color.color_light_green
-            todoItem.itemPriority == TodoItem.Priority.HIGH -> R.color.color_light_red
-            else -> R.color.support_light_separator
+            todoItem.doneFlag -> R.color.color_green
+            todoItem.itemPriority == TodoItem.Priority.HIGH -> R.color.color_red
+            else -> R.color.support_separator
         }
         checkBox.buttonTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, checkBoxColor))
     }
